@@ -43,7 +43,7 @@ namespace MGS.Net.Demo
                 }
                 else
                 {
-                    Debug.LogFormat("error is {0}", client.Error.Message);
+                    Debug.LogErrorFormat("error is {0}", client.Error.Message);
                 }
 
                 client.Close();

@@ -196,7 +196,7 @@ namespace MGS.Net
 
                             workingClients.RemoveAt(i);
                             ClearResolver(client);
-                            OnClientIsError(client);
+                            OnClientIsDone(client);
                             i--;
                         }
                     }
@@ -209,12 +209,6 @@ namespace MGS.Net
         /// </summary>
         /// <param name="client"></param>
         protected virtual void OnClientIsDone(INetClient client) { }
-
-        /// <summary>
-        /// On client is error.
-        /// </summary>
-        /// <param name="client"></param>
-        protected virtual void OnClientIsError(INetClient client) { }
 
         /// <summary>
         /// Check client is retrieable?

@@ -86,10 +86,13 @@ namespace MGS.Net
         /// <param name="client"></param>
         protected override void OnClientIsDone(INetClient client)
         {
-            if (!string.IsNullOrEmpty(client.Result))
+            if (client.Error == null)
             {
-                var key = client.URL.GetHashCode().ToString();
-                Cacher.Set(key, client.Result);
+                if (!string.IsNullOrEmpty(client.Result))
+                {
+                    var key = client.URL.GetHashCode().ToString();
+                    Cacher.Set(key, client.Result);
+                }
             }
             base.OnClientIsDone(client);
         }
