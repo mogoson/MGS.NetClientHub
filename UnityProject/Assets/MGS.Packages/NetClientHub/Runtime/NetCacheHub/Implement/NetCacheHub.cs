@@ -20,19 +20,27 @@ namespace MGS.Net
     public class NetCacheHub : NetClientHub, INetCacheHub
     {
         /// <summary>
-        /// Cacher for net data.
+        /// Cacher for net result.
         /// </summary>
-        public ICacher<string> Cacher { set; get; }
+        public ICacher<string> ResultCacher { set; get; }
+
+        /// <summary>
+        /// Cacher for net client.
+        /// </summary>
+        public ICacher<INetClient> ClientCacher { set; get; }
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="cacher">Cacher for net data.</param>
+        /// <param name="resultCacher">Cacher for net result.</param>
+        /// <param name="clientCacher">Cacher for net client.</param>
         /// <param name="concurrency">Max count of concurrency clients.</param>
         /// <param name="resolver">Net resolver to check retrieable.</param>
-        public NetCacheHub(ICacher<string> cacher, int concurrency = 3, INetResolver resolver = null) : base(concurrency, resolver)
+        public NetCacheHub(ICacher<string> resultCacher = null, ICacher<INetClient> clientCacher = null,
+            int concurrency = 3, INetResolver resolver = null) : base(concurrency, resolver)
         {
-            Cacher = cacher;
+            ResultCacher = resultCacher;
+            ClientCacher = clientCacher;
         }
 
         /// <summary>
@@ -44,12 +52,13 @@ namespace MGS.Net
         public override INetClient Put(string url, int timeout)
         {
             var key = url.GetHashCode().ToString();
-            var cache = Cacher.Get(key);
-            if (!string.IsNullOrEmpty(cache))
+            var client = GetCacheClient(url, key);
+            if (client == null)
             {
-                return new CacheClient(cache);
+                client = base.Put(url, timeout);
+                SetCacheClient(key, client);
             }
-            return base.Put(url, timeout);
+            return client;
         }
 
         /// <summary>
@@ -61,13 +70,33 @@ namespace MGS.Net
         /// <returns></returns>
         public override INetClient Post(string url, int timeout, string postData)
         {
-            var key = url.GetHashCode().ToString();
-            var cache = Cacher.Get(key);
-            if (!string.IsNullOrEmpty(cache))
+            var key = (url + postData).GetHashCode().ToString();
+            var client = GetCacheClient(url, key);
+            if (client == null)
             {
-                return new CacheClient(cache);
+                client = base.Post(url, timeout, postData);
+                SetCacheClient(key, client);
             }
-            return base.Post(url, timeout, postData);
+            return client;
+        }
+
+        /// <summary>
+        /// Download file from server.
+        /// </summary>
+        /// <param name="url">Remote url string.</param>
+        /// <param name="timeout">Timeout(ms) of request.</param>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public override INetClient Download(string url, int timeout, string filePath)
+        {
+            var key = url.GetHashCode().ToString();
+            var client = GetCacheClient(url, key);
+            if (client == null)
+            {
+                client = base.Download(url, timeout, filePath);
+                SetCacheClient(key, client);
+            }
+            return client;
         }
 
         /// <summary>
@@ -76,8 +105,8 @@ namespace MGS.Net
         public override void Dispose()
         {
             base.Dispose();
-            Cacher.Dispose();
-            Cacher = null;
+            ResultCacher.Dispose();
+            ResultCacher = null;
         }
 
         /// <summary>
@@ -86,15 +115,103 @@ namespace MGS.Net
         /// <param name="client"></param>
         protected override void OnClientIsDone(INetClient client)
         {
-            if (client.Error == null)
+            var keySource = client.URL;
+            if (client is NetPostClient)
             {
-                if (!string.IsNullOrEmpty(client.Result))
-                {
-                    var key = client.URL.GetHashCode().ToString();
-                    Cacher.Set(key, client.Result);
-                }
+                keySource += (client as NetPostClient).PostData;
             }
+
+            var key = keySource.GetHashCode().ToString();
+            if (!string.IsNullOrEmpty(client.Result))
+            {
+                SetCacheResult(key, client.Result);
+            }
+
+            RemoveCacheClient(key);
             base.OnClientIsDone(client);
+        }
+
+        /// <summary>
+        /// Get client from one of the cachers(ResultCacher/ClientCacher).
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        protected INetClient GetCacheClient(string url, string key)
+        {
+            var result = GetCacheResult(key);
+            if (!string.IsNullOrEmpty(result))
+            {
+                return new NetCacheClient(url, result);
+            }
+
+            return GetCacheClient(key);
+        }
+
+        /// <summary>
+        /// Get result from ResultCacher.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        protected string GetCacheResult(string key)
+        {
+            if (ResultCacher == null)
+            {
+                return null;
+            }
+            return ResultCacher.Get(key);
+        }
+
+        /// <summary>
+        /// Set result to ResultCacher.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="result"></param>
+        protected void SetCacheResult(string key, string result)
+        {
+            if (ResultCacher != null)
+            {
+                ResultCacher.Set(key, result);
+            }
+        }
+
+        /// <summary>
+        /// Get client from ClientCacher.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        protected INetClient GetCacheClient(string key)
+        {
+            if (ClientCacher == null)
+            {
+                return null;
+            }
+            return ClientCacher.Get(key);
+        }
+
+        /// <summary>
+        /// Set client to ClientCacher.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="client"></param>
+        protected void SetCacheClient(string key, INetClient client)
+        {
+            if (ClientCacher != null)
+            {
+                ClientCacher.Set(key, client);
+            }
+        }
+
+        /// <summary>
+        /// Remove client from ClientCacher.
+        /// </summary>
+        /// <param name="key"></param>
+        protected void RemoveCacheClient(string key)
+        {
+            if (ClientCacher != null)
+            {
+                ClientCacher.Remove(key);
+            }
         }
     }
 }

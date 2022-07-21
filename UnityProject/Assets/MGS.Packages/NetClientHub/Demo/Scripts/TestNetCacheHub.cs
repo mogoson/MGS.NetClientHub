@@ -23,9 +23,11 @@ namespace MGS.Net.Demo
 
         void Start()
         {
-            var cacher = new Cacher<string>(100, 10000);
+            var resultCacher = new TimeoutCacher<string>(100, 10000);
+            var clientCacher = new Cacher<INetClient>(100);
             var resolver = new NetResolver(3, new Type[] { typeof(TimeoutException) });
-            hub = new NetCacheHub(cacher, 3, resolver);
+
+            hub = new NetCacheHub(resultCacher, clientCacher, 3, resolver);
         }
 
         private void Update()
@@ -35,7 +37,7 @@ namespace MGS.Net.Demo
                 if (client == null)
                 {
                     client = hub.Put(url, 1000);
-                    if (client is CacheClient)
+                    if (client is NetCacheClient)
                     {
                         Debug.LogFormat("Respond from cache.");
                     }

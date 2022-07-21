@@ -2,7 +2,7 @@
  *  Copyright © 2022 Mogoson. All rights reserved.
  *------------------------------------------------------------------------
  *  File         :  Cacher.cs
- *  Description  :  Cacher for data.
+ *  Description  :  Cacher for cache data.
  *------------------------------------------------------------------------
  *  Author       :  Mogoson
  *  Version      :  1.0
@@ -10,13 +10,12 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
-using System;
 using System.Collections.Generic;
 
 namespace MGS.Net
 {
     /// <summary>
-    /// Cacher for data.
+    /// Cacher for cache data.
     /// </summary>
     /// <typeparam name="T">Type of cache data.</typeparam>
     public class Cacher<T> : ICacher<T>
@@ -27,24 +26,17 @@ namespace MGS.Net
         public int MaxCache { set; get; }
 
         /// <summary>
-        /// Timeout(ms).
+        /// Cache datas.
         /// </summary>
-        public int Timeout { set; get; }
-
-        /// <summary>
-        /// Cache stocks.
-        /// </summary>
-        protected Dictionary<string, Stock> stocks = new Dictionary<string, Stock>();
+        protected Dictionary<string, Cache<T>> caches = new Dictionary<string, Cache<T>>();
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="maxCache">Max count of caches.</param>
-        /// <param name="timeout">Timeout(ms).</param>
-        public Cacher(int maxCache = 100, int timeout = 1000)
+        public Cacher(int maxCache = 100)
         {
             MaxCache = maxCache;
-            Timeout = timeout;
         }
 
         /// <summary>
@@ -52,17 +44,17 @@ namespace MGS.Net
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public void Set(string key, T content)
+        public void Set(string key, T value)
         {
-            var keys = stocks.Keys.GetEnumerator();
-            while (stocks.Count > MaxCache)
+            var keys = caches.Keys.GetEnumerator();
+            while (caches.Count > MaxCache)
             {
                 keys.MoveNext();
-                stocks.Remove(keys.Current);
+                caches.Remove(keys.Current);
             }
 
-            var info = new Stock(content);
-            stocks[key] = info;
+            var cache = new Cache<T>(value);
+            caches[key] = cache;
         }
 
         /// <summary>
@@ -72,16 +64,14 @@ namespace MGS.Net
         /// <returns></returns>
         public T Get(string key)
         {
-            if (stocks.ContainsKey(key))
+            if (caches.ContainsKey(key))
             {
-                var info = stocks[key];
-                var ms = (DateTime.Now - info.stamp).TotalMilliseconds;
-                if (ms > Timeout)
+                var cache = caches[key];
+                if (CheckCacheIsValid(cache))
                 {
-                    Remove(key);
-                    return default(T);
+                    return cache.content;
                 }
-                return info.content;
+                Remove(key);
             }
             return default(T);
         }
@@ -92,7 +82,7 @@ namespace MGS.Net
         /// <param name="key"></param>
         public void Remove(string key)
         {
-            stocks.Remove(key);
+            caches.Remove(key);
         }
 
         /// <summary>
@@ -100,7 +90,7 @@ namespace MGS.Net
         /// </summary>
         public void Clear()
         {
-            stocks.Clear();
+            caches.Clear();
         }
 
         /// <summary>
@@ -109,44 +99,17 @@ namespace MGS.Net
         public void Dispose()
         {
             Clear();
-            stocks = null;
+            caches = null;
         }
 
         /// <summary>
-        /// Stock cache.
+        /// Check the cache is valid?
         /// </summary>
-        protected struct Stock
+        /// <param name="cache"></param>
+        /// <returns></returns>
+        protected virtual bool CheckCacheIsValid(Cache<T> cache)
         {
-            /// <summary>
-            /// Content of stock.
-            /// </summary>
-            public T content;
-
-            /// <summary>
-            /// Stamp of stock.
-            /// </summary>
-            public DateTime stamp;
-
-            /// <summary>
-            /// Constructor.
-            /// </summary>
-            /// <param name="content">Content of stock.</param>
-            public Stock(T content)
-            {
-                this.content = content;
-                stamp = DateTime.Now;
-            }
-
-            /// <summary>
-            /// Constructor.
-            /// </summary>
-            /// <param name="content">Content of stock.</param>
-            /// <param name="stamp">Stamp of stock.</param>
-            public Stock(T content, DateTime stamp)
-            {
-                this.content = content;
-                this.stamp = stamp;
-            }
+            return true;
         }
     }
 }

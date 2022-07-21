@@ -1,8 +1,8 @@
 ﻿/*************************************************************************
  *  Copyright © 2022 Mogoson. All rights reserved.
  *------------------------------------------------------------------------
- *  File         :  INetCacheHub.cs
- *  Description  :  Interface of hub to manage net clients and cache net data.
+ *  File         :  ITimeoutCacher.cs
+ *  Description  :  Interface of timeout cacher.
  *------------------------------------------------------------------------
  *  Author       :  Mogoson
  *  Version      :  1.0
@@ -13,18 +13,14 @@
 namespace MGS.Net
 {
     /// <summary>
-    /// Interface of hub to manage net clients and cache net data.
+    /// Interface of timeout cacher.
     /// </summary>
-    public interface INetCacheHub : INetClientHub
+    /// <typeparam name="T">Type of cache data.</typeparam>
+    public interface ITimeoutCacher<T> : ICacher<T>
     {
         /// <summary>
-        /// Cacher for net result.
+        /// Timeout(ms).
         /// </summary>
-        ICacher<string> ResultCacher { set; get; }
-
-        /// <summary>
-        /// Cacher for net client.
-        /// </summary>
-        ICacher<INetClient> ClientCacher { set; get; }
+        int Timeout { set; get; }
     }
 }

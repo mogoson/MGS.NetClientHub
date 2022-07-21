@@ -1,8 +1,8 @@
 ﻿/*************************************************************************
  *  Copyright © 2022 Mogoson. All rights reserved.
  *------------------------------------------------------------------------
- *  File         :  CacheClient.cs
- *  Description  :  Client for cache data.
+ *  File         :  Cache.cs
+ *  Description  :  Cache for data.
  *------------------------------------------------------------------------
  *  Author       :  Mogoson
  *  Version      :  1.0
@@ -10,38 +10,44 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
+using System;
+
 namespace MGS.Net
 {
     /// <summary>
-    /// Client for cache data.
+    /// Cache for data.
     /// </summary>
-    public class CacheClient : NetClient
+    public struct Cache<T>
     {
+        /// <summary>
+        /// Content of cache.
+        /// </summary>
+        public T content;
+
+        /// <summary>
+        /// Stamp of cache.
+        /// </summary>
+        public DateTime stamp;
+
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="cache">Cache data.</param>
-        public CacheClient(string cache) : base(null, 0)
+        /// <param name="content">Content of cache.</param>
+        public Cache(T content)
         {
-            Result = cache;
-            IsDone = true;
+            this.content = content;
+            stamp = DateTime.Now;
         }
 
         /// <summary>
-        /// Open client(do nothing in this case).
+        /// Constructor.
         /// </summary>
-        public override void Open() { }
-
-        /// <summary>
-        /// Close client(do nothing in this case).
-        /// </summary>
-        public override void Close() { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="webClient"></param>
-        /// <param name="url"></param>
-        protected override void DoRequest(WebClientEx webClient, string url) { }
+        /// <param name="content">Content of cache.</param>
+        /// <param name="stamp">Stamp of cache.</param>
+        public Cache(T content, DateTime stamp)
+        {
+            this.content = content;
+            this.stamp = stamp;
+        }
     }
 }

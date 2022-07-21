@@ -21,6 +21,11 @@ namespace MGS.Net
     public interface ICacher<T> : IDisposable
     {
         /// <summary>
+        /// Max count of caches.
+        /// </summary>
+        int MaxCache { set; get; }
+
+        /// <summary>
         /// Set cache data.
         /// </summary>
         /// <param name="key"></param>

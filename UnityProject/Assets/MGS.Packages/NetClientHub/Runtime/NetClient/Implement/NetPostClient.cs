@@ -25,7 +25,7 @@ namespace MGS.Net
         /// <summary>
         /// Post data of request.
         /// </summary>
-        protected string postData;
+        public string PostData { protected set; get; }
 
         /// <summary>
         /// Constructor.
@@ -36,7 +36,7 @@ namespace MGS.Net
         /// <param name="postData">Post data of request.</param>
         public NetPostClient(string url, int timeout, Dictionary<string, string> headData, string postData) : base(url, timeout, headData)
         {
-            this.postData = postData;
+            PostData = postData;
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace MGS.Net
         protected override void DoRequest(WebClientEx webClient, string url)
         {
             webClient.UploadDataCompleted += WebClient_UploadDataCompleted;
-            webClient.UploadDataAsync(new Uri(url), Encoding.UTF8.GetBytes(postData));
+            webClient.UploadDataAsync(new Uri(url), Encoding.UTF8.GetBytes(PostData));
         }
 
         /// <summary>
