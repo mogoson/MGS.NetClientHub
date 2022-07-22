@@ -25,6 +25,10 @@
 - Cache the client to share if the same url request.
 - Cache the clinet result to share if the same url request.
 
+## Design
+
+![Module Diagram](./Attachment/images/ModuleDiagram.PNG)
+
 ## Usage
 
 - Use the global instance of API.
@@ -57,10 +61,6 @@ hub.Put(url);//Post/Download
 ## Demo
 
 - Demos in the path "MGS.Packages/NetClientHub/Demo/" provide reference to you.
-
-## Preview
-
-![Module Diagram](./Attachment/images/ModuleDiagram.PNG)
 
 ------
 
