@@ -27,7 +27,7 @@ namespace MGS.Net
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="headData">Head data of request.</param>
-        public NetPutClient(string url, int timeout, Dictionary<string, string> headData) : base(url, timeout, headData) { }
+        public NetPutClient(string url, int timeout, IDictionary<string, string> headData = null) : base(url, timeout, headData) { }
 
         /// <summary>
         /// Do request work.

@@ -21,8 +21,7 @@ namespace MGS.Net.Demo
 
         void Start()
         {
-            client = new NetPutClient(url, 120000, null);
-            client.Open();
+            client = NetClientHubAPI.handler.Put(url, 120000);
         }
 
         void Update()

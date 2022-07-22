@@ -32,9 +32,9 @@ namespace MGS.Net
         /// </summary>
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
-        /// <param name="headData">Head data of request.</param>
         /// <param name="postData">Post data of request.</param>
-        public NetPostClient(string url, int timeout, Dictionary<string, string> headData, string postData) : base(url, timeout, headData)
+        /// <param name="headData">Head data of request.</param>
+        public NetPostClient(string url, int timeout, string postData, IDictionary<string, string> headData = null) : base(url, timeout, headData)
         {
             PostData = postData;
         }

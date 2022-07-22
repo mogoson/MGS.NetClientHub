@@ -10,6 +10,9 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
+using System.Collections.Generic;
+using System.IO;
+
 namespace MGS.Net
 {
     /// <summary>
@@ -48,14 +51,15 @@ namespace MGS.Net
         /// </summary>
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
+        /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public override INetClient Put(string url, int timeout)
+        public override INetClient Put(string url, int timeout, IDictionary<string, string> headData = null)
         {
             var key = url.GetHashCode().ToString();
             var client = GetCacheClient(url, key);
             if (client == null)
             {
-                client = base.Put(url, timeout);
+                client = base.Put(url, timeout, headData);
                 SetCacheClient(key, client);
             }
             return client;
@@ -67,14 +71,15 @@ namespace MGS.Net
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="postData"></param>
+        /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public override INetClient Post(string url, int timeout, string postData)
+        public override INetClient Post(string url, int timeout, string postData, IDictionary<string, string> headData = null)
         {
             var key = (url + postData).GetHashCode().ToString();
             var client = GetCacheClient(url, key);
             if (client == null)
             {
-                client = base.Post(url, timeout, postData);
+                client = base.Post(url, timeout, postData, headData);
                 SetCacheClient(key, client);
             }
             return client;
@@ -86,14 +91,15 @@ namespace MGS.Net
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="filePath"></param>
+        /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public override INetClient Download(string url, int timeout, string filePath)
+        public override INetClient Download(string url, int timeout, string filePath, IDictionary<string, string> headData = null)
         {
             var key = url.GetHashCode().ToString();
-            var client = GetCacheClient(url, key);
+            var client = GetCacheClient(url, key, true);
             if (client == null)
             {
-                client = base.Download(url, timeout, filePath);
+                client = base.Download(url, timeout, filePath, headData);
                 SetCacheClient(key, client);
             }
             return client;
@@ -136,13 +142,17 @@ namespace MGS.Net
         /// </summary>
         /// <param name="url"></param>
         /// <param name="key"></param>
+        /// <param name="checkFile"></param>
         /// <returns></returns>
-        protected INetClient GetCacheClient(string url, string key)
+        protected INetClient GetCacheClient(string url, string key, bool checkFile = false)
         {
             var result = GetCacheResult(key);
             if (!string.IsNullOrEmpty(result))
             {
-                return new NetCacheClient(url, result);
+                if (!checkFile || File.Exists(result))
+                {
+                    return new NetCacheClient(url, result);
+                }
             }
 
             return GetCacheClient(key);

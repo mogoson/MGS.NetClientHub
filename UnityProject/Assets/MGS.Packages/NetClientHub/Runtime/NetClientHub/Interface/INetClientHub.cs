@@ -11,6 +11,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 
 namespace MGS.Net
 {
@@ -34,8 +35,9 @@ namespace MGS.Net
         /// </summary>
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
+        /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        INetClient Put(string url, int timeout);
+        INetClient Put(string url, int timeout, IDictionary<string, string> headData = null);
 
         /// <summary>
         /// Post url and data to server.
@@ -43,8 +45,9 @@ namespace MGS.Net
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="postData"></param>
+        /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        INetClient Post(string url, int timeout, string postData);
+        INetClient Post(string url, int timeout, string postData, IDictionary<string, string> headData = null);
 
         /// <summary>
         /// Download file from server.
@@ -52,8 +55,9 @@ namespace MGS.Net
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="filePath"></param>
+        /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        INetClient Download(string url, int timeout, string filePath);
+        INetClient Download(string url, int timeout, string filePath, IDictionary<string, string> headData = null);
 
         /// <summary>
         /// Discard net clients.

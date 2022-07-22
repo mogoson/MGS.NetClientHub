@@ -67,10 +67,11 @@ namespace MGS.Net
         /// </summary>
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
+        /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public virtual INetClient Put(string url, int timeout)
+        public virtual INetClient Put(string url, int timeout, IDictionary<string, string> headData = null)
         {
-            var client = new NetPutClient(url, timeout, null) { DontSetDoneIfError = true };
+            var client = new NetPutClient(url, timeout, headData) { DontSetDoneIfError = true };
             waitingClients.Enqueue(client);
             return client;
         }
@@ -81,10 +82,11 @@ namespace MGS.Net
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="postData"></param>
+        /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public virtual INetClient Post(string url, int timeout, string postData)
+        public virtual INetClient Post(string url, int timeout, string postData, IDictionary<string, string> headData = null)
         {
-            var client = new NetPostClient(url, timeout, null, postData) { DontSetDoneIfError = true };
+            var client = new NetPostClient(url, timeout, postData, headData) { DontSetDoneIfError = true };
             waitingClients.Enqueue(client);
             return client;
         }
@@ -95,10 +97,11 @@ namespace MGS.Net
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="filePath"></param>
+        /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public virtual INetClient Download(string url, int timeout, string filePath)
+        public virtual INetClient Download(string url, int timeout, string filePath, IDictionary<string, string> headData = null)
         {
-            var client = new NetFileClient(url, timeout, filePath) { DontSetDoneIfError = true };
+            var client = new NetFileClient(url, timeout, filePath, headData) { DontSetDoneIfError = true };
             waitingClients.Enqueue(client);
             return client;
         }

@@ -10,7 +10,6 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
-using System;
 using UnityEngine;
 
 namespace MGS.Net.Demo
@@ -19,16 +18,6 @@ namespace MGS.Net.Demo
     {
         public string url;
         INetClient client;
-        INetClientHub hub;
-
-        void Start()
-        {
-            var resultCacher = new TimeoutCacher<string>(100, 10000);
-            var clientCacher = new Cacher<INetClient>(100);
-            var resolver = new NetResolver(3, new Type[] { typeof(TimeoutException) });
-
-            hub = new NetCacheHub(resultCacher, clientCacher, 3, resolver);
-        }
 
         private void Update()
         {
@@ -36,7 +25,7 @@ namespace MGS.Net.Demo
             {
                 if (client == null)
                 {
-                    client = hub.Put(url, 1000);
+                    client = NetClientHubAPI.handler.Put(url, 1000);
                     if (client is NetCacheClient)
                     {
                         Debug.LogFormat("Respond from cache.");
@@ -74,7 +63,7 @@ namespace MGS.Net.Demo
 
         private void OnDestroy()
         {
-            hub.Dispose();
+            NetClientHubAPI.handler.Dispose();
             client = null;
         }
     }

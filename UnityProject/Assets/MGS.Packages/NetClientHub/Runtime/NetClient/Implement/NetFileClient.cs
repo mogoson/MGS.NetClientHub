@@ -11,6 +11,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -43,7 +44,8 @@ namespace MGS.Net
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="filePath">Path of local file.</param>
-        public NetFileClient(string url, int timeout, string filePath) : base(url, timeout)
+        /// <param name="headData">Head data of request.</param>
+        public NetFileClient(string url, int timeout, string filePath, IDictionary<string, string> headData = null) : base(url, timeout, headData)
         {
             FilePath = filePath;
         }

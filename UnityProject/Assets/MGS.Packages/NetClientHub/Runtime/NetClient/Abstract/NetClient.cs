@@ -69,7 +69,7 @@ namespace MGS.Net
         /// <summary>
         /// Head data of request.
         /// </summary>
-        protected Dictionary<string, string> headData;
+        protected IDictionary<string, string> headData;
 
         /// <summary>
         /// WebClient to connect remote.
@@ -82,7 +82,7 @@ namespace MGS.Net
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="headData">Head data of request.</param>
-        public NetClient(string url, int timeout, Dictionary<string, string> headData = null)
+        public NetClient(string url, int timeout, IDictionary<string, string> headData = null)
         {
             URL = url;
             Timeout = timeout;
@@ -157,7 +157,7 @@ namespace MGS.Net
         /// </summary>
         /// <param name="webClient"></param>
         /// <param name="headData"></param>
-        protected void AddHeaders(WebClientEx webClient, Dictionary<string, string> headData)
+        protected void AddHeaders(WebClientEx webClient, IDictionary<string, string> headData)
         {
             if (headData == null || headData.Count == 0)
             {
