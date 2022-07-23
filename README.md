@@ -27,40 +27,22 @@
 
 ## Design
 
-![Module Diagram](./Attachment/images/ModuleDiagram.PNG)
+- Waiting Clients, enqueue the idle clients.
+- Working Clients, list the working clients.
+- Result Cacher
+  - Cache the result from client.
+  - Get result for client if the request angs is match.
+- Client Cacher
+  - Cache the  client by key(from request args).
+  - Get client for share if the request angs is match.
+- Resolver
+  - Check client retry by error types.
+  - Record the retry times of client.
 
-## Usage
-
-- Use the global instance of API.
-
-```C#
-var clinet  = NetClientHubAPI.Handler.Put(url, timeout);
-while(!clinet.IsDone)
-{
-    //Show infos. example clinet.Speed, clinet.Progress...
-    //If need abort the request, use clinet.Close();
-}
-//Show Request is done.
-```
-
-- Construct a instance of  API.
-
-```C#
-//Just need request
-var client = new NetPutClient(url);//NetPostClient/NetFileClient
-
-//Just need manage clients.
-var hub = new NetClientHub();
-hub.Put(url);//Post/Download
-
-//Need manage clients and cache client and result.
-var hub = new NetCacheClient();
-hub.Put(url);//Post/Download
-```
-
-## Demo
-
-- Demos in the path "MGS.Packages/NetClientHub/Demo/" provide reference to you.
+- Tick Update Thread
+  - Dequeue waiting client to start to work.
+  - Check working client status, resolve retry  when error.
+  - Set result of client to cacher when client is done.
 
 ------
 

@@ -25,6 +25,25 @@
 - Cache the client to share if the same url request.
 - Cache the clinet result to share if the same url request.
 
+## Design
+
+- Waiting Clients, enqueue the idle clients.
+- Working Clients, list the working clients.
+- Result Cacher
+  - Cache the result from client.
+  - Get result for client if the request angs is match.
+- Client Cacher
+  - Cache the  client by key(from request args).
+  - Get client for share if the request angs is match.
+- Resolver
+  - Check client retry by error types.
+  - Record the retry times of client.
+
+- Tick Update Thread
+  - Dequeue waiting client to start to work.
+  - Check working client status, resolve retry  when error.
+  - Set result of client to cacher when client is done.
+
 ## Usage
 
 - Use the global instance of API.
@@ -54,14 +73,9 @@ var hub = new NetCacheClient();
 hub.Put(url);//Post/Download
 ```
 
-## Demo
-
-- Demos in the path "MGS.Packages/NetClientHub/Demo/" provide reference to you.
-
 ## Source
 
 - https://github.com/mogoson/MGS.NetClientHub
-
 
 ------
 
