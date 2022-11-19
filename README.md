@@ -8,7 +8,8 @@
 
 ## Platform
 
-- Windows
+- Windows.
+- Android.
 
 ## Environment
 
