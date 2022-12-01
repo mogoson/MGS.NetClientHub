@@ -15,6 +15,10 @@
 - Unity 5.0 or above.
 - .Net Framework 3.5 or above.
 
+## Version
+
+- 0.1.0
+
 ## Demand
 
 - Put request data from remote server.
