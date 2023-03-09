@@ -13,6 +13,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Threading;
 
@@ -58,9 +59,9 @@ namespace MGS.Net
         protected override void DoRequest(WebClientEx webClient, string url)
         {
             var tempFile = GetTempFilePath(url, FilePath);
-            var tempRange = GetFileLength(tempFile);
-            webClient.Range = tempRange;
-            webClient.OpenReadCompleted += (s, e) => WebClient_OpenReadCompleted(s, e, tempFile, tempRange, FilePath);
+            var tempSize = GetFileLength(tempFile);
+            webClient.Range = tempSize;
+            webClient.OpenReadCompleted += (s, e) => WebClient_OpenReadCompleted(s, e, tempFile, tempSize, FilePath);
             webClient.OpenReadAsync(new Uri(url));
         }
 
@@ -70,14 +71,20 @@ namespace MGS.Net
         /// <param name="sender"></param>
         /// <param name="e"></param>
         /// <param name="tempFile"></param>
-        /// <param name="tempRange"></param>
+        /// <param name="tempSize"></param>
         /// <param name="destFile"></param>
-        protected void WebClient_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e, string tempFile, long tempRange, string destFile)
+        protected void WebClient_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e, string tempFile, long tempSize, string destFile)
         {
             if (!e.Cancelled && e.Error == null)
             {
                 Size = e.Result.Length;
-                var streamCopyThread = new Thread(() => CopyStreamToFile(e.Result, tempRange, tempFile, destFile)) { IsBackground = true };
+                var encoding = (sender as WebClientEx).ResponseHeaders["Content-Encoding"];
+                var stream = e.Result;
+                if (encoding == "gzip")
+                {
+                    stream = new GZipStream(stream, CompressionMode.Decompress);
+                }
+                var streamCopyThread = new Thread(() => CopyStreamToFile(stream, tempFile, tempSize, destFile)) { IsBackground = true };
                 streamCopyThread.Start();
             }
             else
@@ -91,12 +98,12 @@ namespace MGS.Net
         /// Copy data from source stream to local file stream.
         /// </summary>
         /// <param name="sourceStream"></param>
-        /// <param name="range"></param>
         /// <param name="tempFile"></param>
+        /// <param name="tempSize"></param>
         /// <param name="destFile"></param>
-        protected void CopyStreamToFile(Stream sourceStream, long range, string tempFile, string destFile)
+        protected void CopyStreamToFile(Stream sourceStream, string tempFile, long tempSize, string destFile)
         {
-            Size += range;
+            Size += tempSize;
             try
             {
                 RequireDirectory(tempFile);
@@ -105,7 +112,7 @@ namespace MGS.Net
                     int readSize;
                     var buffer = new byte[BUFFER_SIZE];
 
-                    float cacheSize = range;
+                    float cacheSize = tempSize;
                     var statisticsSize = 0f;
                     var statisticsTimer = 0d;
                     var lastStatisticsTicks = DateTime.Now.Ticks;

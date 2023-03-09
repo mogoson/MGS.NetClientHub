@@ -13,6 +13,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text;
 
 namespace MGS.Net
 {
@@ -48,6 +49,7 @@ namespace MGS.Net
         private void WebClient_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
             Progress = e.Error == null ? 1 : 0;
+            Size = Encoding.UTF8.GetByteCount(e.Result);
             Result = e.Result;
             Error = e.Error;
             Close();
