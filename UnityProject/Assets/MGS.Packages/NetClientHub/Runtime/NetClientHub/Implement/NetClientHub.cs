@@ -166,6 +166,13 @@ namespace MGS.Net
             while (waitingClients.Count > 0 && workingClients.Count < Concurrency)
             {
                 var client = waitingClients.Dequeue();
+                if (client.IsDone)
+                {
+                    ClearResolver(client);
+                    OnClientIsDone(client);
+                    continue;
+                }
+
                 client.Open();
                 workingClients.Add(client);
             }

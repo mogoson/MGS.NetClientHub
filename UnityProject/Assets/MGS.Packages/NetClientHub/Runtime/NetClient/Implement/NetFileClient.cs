@@ -77,9 +77,10 @@ namespace MGS.Net
         {
             if (!e.Cancelled && e.Error == null)
             {
-                Size = e.Result.Length;
-                var encoding = (sender as WebClientEx).ResponseHeaders["Content-Encoding"];
                 var stream = e.Result;
+                Size = tempSize + stream.Length;
+
+                var encoding = (sender as WebClientEx).ResponseHeaders["Content-Encoding"];
                 if (encoding == "gzip")
                 {
                     stream = new GZipStream(stream, CompressionMode.Decompress);
@@ -103,7 +104,6 @@ namespace MGS.Net
         /// <param name="destFile"></param>
         protected void CopyStreamToFile(Stream sourceStream, string tempFile, long tempSize, string destFile)
         {
-            Size += tempSize;
             try
             {
                 RequireDirectory(tempFile);
