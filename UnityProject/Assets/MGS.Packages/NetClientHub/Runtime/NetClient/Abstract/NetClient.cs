@@ -22,6 +22,11 @@ namespace MGS.Net
     public abstract class NetClient : INetClient
     {
         /// <summary>
+        /// Key of client.
+        /// </summary>
+        public string Key { protected set; get; }
+
+        /// <summary>
         /// Remote url string.
         /// </summary>
         public string URL { protected set; get; }
@@ -84,9 +89,20 @@ namespace MGS.Net
         /// <param name="headData">Head data of request.</param>
         public NetClient(string url, int timeout, IDictionary<string, string> headData = null)
         {
+            Key = GetKey(url);
             URL = url;
             Timeout = timeout;
             this.headData = headData;
+        }
+
+        /// <summary>
+        /// Get key for client.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static string GetKey(string url)
+        {
+            return url.GetHashCode().ToString();
         }
 
         /// <summary>

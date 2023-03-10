@@ -24,7 +24,7 @@ namespace MGS.Net.Demo
         void Start()
         {
             var headData = new Dictionary<string, string> { { "Content-Type", "application/json" } };
-            client = NetClientHubAPI.handler.Post(url, 120000, postData, headData);
+            client = NetClientHubAPI.handler.PostAsync(url, 120000, postData, headData);
         }
 
         void Update()

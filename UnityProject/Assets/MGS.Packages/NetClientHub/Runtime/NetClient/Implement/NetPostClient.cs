@@ -36,7 +36,18 @@ namespace MGS.Net
         /// <param name="headData">Head data of request.</param>
         public NetPostClient(string url, int timeout, string postData, IDictionary<string, string> headData = null) : base(url, timeout, headData)
         {
+            Key = GetKey(url, postData);
             PostData = postData;
+        }
+
+        /// <summary>
+        /// Get key for client.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static string GetKey(string url, string postData)
+        {
+            return (url + postData).GetHashCode().ToString();
         }
 
         /// <summary>

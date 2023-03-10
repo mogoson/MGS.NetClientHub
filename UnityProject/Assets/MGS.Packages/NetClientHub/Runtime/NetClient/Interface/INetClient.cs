@@ -20,6 +20,11 @@ namespace MGS.Net
     public interface INetClient : IDisposable
     {
         /// <summary>
+        /// Key of client.
+        /// </summary>
+        string Key { get; }
+
+        /// <summary>
         /// Remote url string.
         /// </summary>
         string URL { get; }

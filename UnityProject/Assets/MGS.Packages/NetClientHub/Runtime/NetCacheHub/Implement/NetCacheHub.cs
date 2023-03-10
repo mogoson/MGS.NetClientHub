@@ -53,13 +53,13 @@ namespace MGS.Net
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public override INetClient Put(string url, int timeout, IDictionary<string, string> headData = null)
+        public override INetClient PutAsync(string url, int timeout, IDictionary<string, string> headData = null)
         {
-            var key = url.GetHashCode().ToString();
+            var key = NetClient.GetKey(url);
             var client = GetCacheClient(url, key);
             if (client == null)
             {
-                client = base.Put(url, timeout, headData);
+                client = base.PutAsync(url, timeout, headData);
                 SetCacheClient(key, client);
             }
             return client;
@@ -73,13 +73,13 @@ namespace MGS.Net
         /// <param name="postData"></param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public override INetClient Post(string url, int timeout, string postData, IDictionary<string, string> headData = null)
+        public override INetClient PostAsync(string url, int timeout, string postData, IDictionary<string, string> headData = null)
         {
-            var key = (url + postData).GetHashCode().ToString();
+            var key = NetPostClient.GetKey(url, postData);
             var client = GetCacheClient(url, key);
             if (client == null)
             {
-                client = base.Post(url, timeout, postData, headData);
+                client = base.PostAsync(url, timeout, postData, headData);
                 SetCacheClient(key, client);
             }
             return client;
@@ -93,13 +93,13 @@ namespace MGS.Net
         /// <param name="filePath"></param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public override INetClient Download(string url, int timeout, string filePath, IDictionary<string, string> headData = null)
+        public override INetClient DownloadAsync(string url, int timeout, string filePath, IDictionary<string, string> headData = null)
         {
-            var key = url.GetHashCode().ToString();
+            var key = NetClient.GetKey(url);
             var client = GetCacheClient(url, key, true);
             if (client == null)
             {
-                client = base.Download(url, timeout, filePath, headData);
+                client = base.DownloadAsync(url, timeout, filePath, headData);
                 SetCacheClient(key, client);
             }
             return client;
@@ -121,19 +121,12 @@ namespace MGS.Net
         /// <param name="client"></param>
         protected override void OnClientIsDone(INetClient client)
         {
-            var keySource = client.URL;
-            if (client is NetPostClient)
-            {
-                keySource += (client as NetPostClient).PostData;
-            }
-
-            var key = keySource.GetHashCode().ToString();
             if (!string.IsNullOrEmpty(client.Result))
             {
-                SetCacheResult(key, client.Result);
+                SetCacheResult(client.Key, client.Result);
             }
 
-            RemoveCacheClient(key);
+            RemoveCacheClient(client.Key);
             base.OnClientIsDone(client);
         }
 

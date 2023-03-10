@@ -37,7 +37,7 @@ namespace MGS.Net
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        INetClient Put(string url, int timeout, IDictionary<string, string> headData = null);
+        INetClient PutAsync(string url, int timeout, IDictionary<string, string> headData = null);
 
         /// <summary>
         /// Post url and data to server.
@@ -47,7 +47,7 @@ namespace MGS.Net
         /// <param name="postData"></param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        INetClient Post(string url, int timeout, string postData, IDictionary<string, string> headData = null);
+        INetClient PostAsync(string url, int timeout, string postData, IDictionary<string, string> headData = null);
 
         /// <summary>
         /// Download file from server.
@@ -57,7 +57,7 @@ namespace MGS.Net
         /// <param name="filePath"></param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        INetClient Download(string url, int timeout, string filePath, IDictionary<string, string> headData = null);
+        INetClient DownloadAsync(string url, int timeout, string filePath, IDictionary<string, string> headData = null);
 
         /// <summary>
         /// Discard net clients.

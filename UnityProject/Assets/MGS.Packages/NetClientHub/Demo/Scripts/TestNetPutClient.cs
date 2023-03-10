@@ -21,7 +21,7 @@ namespace MGS.Net.Demo
 
         void Start()
         {
-            client = NetClientHubAPI.handler.Put(url, 120000);
+            client = NetClientHubAPI.handler.PutAsync(url, 120000);
         }
 
         void Update()

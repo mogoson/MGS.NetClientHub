@@ -69,7 +69,7 @@ namespace MGS.Net
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public virtual INetClient Put(string url, int timeout, IDictionary<string, string> headData = null)
+        public virtual INetClient PutAsync(string url, int timeout, IDictionary<string, string> headData = null)
         {
             var client = new NetPutClient(url, timeout, headData) { DontSetDoneIfError = true };
             waitingClients.Enqueue(client);
@@ -84,7 +84,7 @@ namespace MGS.Net
         /// <param name="postData"></param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public virtual INetClient Post(string url, int timeout, string postData, IDictionary<string, string> headData = null)
+        public virtual INetClient PostAsync(string url, int timeout, string postData, IDictionary<string, string> headData = null)
         {
             var client = new NetPostClient(url, timeout, postData, headData) { DontSetDoneIfError = true };
             waitingClients.Enqueue(client);
@@ -99,7 +99,7 @@ namespace MGS.Net
         /// <param name="filePath"></param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public virtual INetClient Download(string url, int timeout, string filePath, IDictionary<string, string> headData = null)
+        public virtual INetClient DownloadAsync(string url, int timeout, string filePath, IDictionary<string, string> headData = null)
         {
             var client = new NetFileClient(url, timeout, filePath, headData) { DontSetDoneIfError = true };
             waitingClients.Enqueue(client);

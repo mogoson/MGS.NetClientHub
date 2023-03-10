@@ -25,7 +25,7 @@ namespace MGS.Net.Demo
             {
                 if (client == null)
                 {
-                    client = NetClientHubAPI.handler.Put(url, 1000);
+                    client = NetClientHubAPI.handler.PutAsync(url, 1000);
                     if (client is NetCacheClient)
                     {
                         Debug.LogFormat("Respond from cache.");

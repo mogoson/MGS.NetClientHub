@@ -23,7 +23,7 @@ namespace MGS.Net.Demo
         void Start()
         {
             var file = string.Format("{0}/{1}", Application.dataPath, Path.GetFileName(url));
-            client = NetClientHubAPI.handler.Download(url, 120000, file);
+            client = NetClientHubAPI.handler.DownloadAsync(url, 120000, file);
         }
 
         void Update()
