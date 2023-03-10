@@ -42,7 +42,9 @@ namespace MGS.Net
             var resolver = new NetResolver(3, tolerables);
 
             //In your case, leave the arg as null if you dont need the cache or retry ability.
-            handler = new NetCacheHub(resultCacher, clientCacher, 3, resolver);
+            handler = new NetCacheHub(resultCacher, clientCacher, 3, resolver);//Thread work async, do not notify status.
+            //handler = new NetBridgeHub(resultCacher, clientCacher, 3, resolver);//Thread work async, invoke the Update method to notify status in your thread.
+            //handler = new NetMonoHub(resultCacher, clientCacher, 3, resolver);//Thread work async, notify status in unity main thread.
         }
     }
 }

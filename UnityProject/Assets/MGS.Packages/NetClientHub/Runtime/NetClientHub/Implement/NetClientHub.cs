@@ -43,12 +43,12 @@ namespace MGS.Net
         /// <summary>
         /// Cycle(ms) for one tick.
         /// </summary>
-        private const int TICK_CYCLE = 250;
+        protected const int TICK_CYCLE = 250;
 
         /// <summary>
         /// Mark is disposed?
         /// </summary>
-        private bool isDisposed;
+        protected bool isDisposed;
 
         /// <summary>
         /// Constructor.
