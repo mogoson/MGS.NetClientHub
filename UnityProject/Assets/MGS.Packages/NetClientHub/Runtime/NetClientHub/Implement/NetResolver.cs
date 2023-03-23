@@ -33,7 +33,7 @@ namespace MGS.Net
         /// <summary>
         /// Tolerance times.
         /// </summary>
-        protected Dictionary<int, int> toleranceTimes;
+        protected Dictionary<string, int> toleranceTimes;
 
         /// <summary>
         /// Constructor.
@@ -44,7 +44,7 @@ namespace MGS.Net
         {
             this.times = times;
             this.tolerables = tolerables;
-            toleranceTimes = new Dictionary<int, int>();
+            toleranceTimes = new Dictionary<string, int>();
         }
 
         /// <summary>
@@ -60,20 +60,19 @@ namespace MGS.Net
             }
 
             var tts = 0;
-            var key = client.URL.GetHashCode();
-            if (toleranceTimes.ContainsKey(key))
+            if (toleranceTimes.ContainsKey(client.Key))
             {
-                tts = toleranceTimes[key];
+                tts = toleranceTimes[client.Key];
             }
 
             if (tts < times)
             {
-                toleranceTimes[key] = tts + 1;
+                toleranceTimes[client.Key] = tts + 1;
                 return true;
             }
             else
             {
-                Clear(key);
+                Clear(client);
                 return false;
             }
         }
@@ -84,7 +83,15 @@ namespace MGS.Net
         /// <param name="client"></param>
         public void Clear(INetClient client)
         {
-            Clear(client.URL.GetHashCode());
+            toleranceTimes.Remove(client.Key);
+        }
+
+        /// <summary>
+        /// Clear the history of all clients.
+        /// </summary>
+        public void Clear()
+        {
+            toleranceTimes.Clear();
         }
 
         /// <summary>
@@ -94,15 +101,6 @@ namespace MGS.Net
         {
             tolerables = null;
             toleranceTimes = null;
-        }
-
-        /// <summary>
-        /// Clear the history by key.
-        /// </summary>
-        /// <param name="client"></param>
-        protected void Clear(int key)
-        {
-            toleranceTimes.Remove(key);
         }
     }
 }

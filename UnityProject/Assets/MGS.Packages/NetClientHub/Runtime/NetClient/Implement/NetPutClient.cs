@@ -37,8 +37,20 @@ namespace MGS.Net
         /// <param name="url"></param>
         protected override void DoRequest(WebClientEx webClient, string url)
         {
+            webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
             webClient.DownloadStringCompleted += WebClient_DownloadStringCompleted;
             webClient.DownloadStringAsync(new Uri(url));
+        }
+
+        /// <summary>
+        /// DownloadProgressChanged.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            Progress = e.ProgressPercentage * 0.01f;
         }
 
         /// <summary>
@@ -48,7 +60,6 @@ namespace MGS.Net
         /// <param name="e"></param>
         private void WebClient_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
-            Progress = e.Error == null ? 1 : 0;
             Size = Encoding.UTF8.GetByteCount(e.Result);
             Result = e.Result;
             Error = e.Error;

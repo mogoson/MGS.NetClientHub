@@ -17,7 +17,7 @@ namespace MGS.Net
     /// <summary>
     /// Interface of handler to manage net client status.
     /// </summary>
-    public interface INetHandler
+    public interface INetHandler : IDisposable
     {
         /// <summary>
         /// Client of handler.

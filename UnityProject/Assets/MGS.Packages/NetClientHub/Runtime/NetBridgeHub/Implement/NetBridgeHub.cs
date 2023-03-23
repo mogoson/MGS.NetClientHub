@@ -104,13 +104,23 @@ namespace MGS.Net
         }
 
         /// <summary>
+        /// Clear cache resources.
+        /// </summary>
+        /// <param name="workings">Clear the working clients?</param>
+        /// <param name="waitings">Clear the waiting clients?</param>
+        public override void Clear(bool workings, bool waitings)
+        {
+            base.Clear(workings, waitings);
+            handlers.Clear();
+        }
+
+        /// <summary>
         /// Dispose all resource.
         /// </summary>
         public override void Dispose()
         {
             base.Dispose();
             handlers = null;
-            temps = null;
         }
 
         /// <summary>

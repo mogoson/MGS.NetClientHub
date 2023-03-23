@@ -60,10 +60,10 @@ namespace MGS.Net
         INetClient DownloadAsync(string url, int timeout, string filePath, IDictionary<string, string> headData = null);
 
         /// <summary>
-        /// Discard net clients.
+        /// Clear cache resources.
         /// </summary>
-        /// <param name="workings">Discard the working clients?</param>
-        /// <param name="waitings">Discard the waiting clients?</param>
-        void Discard(bool workings, bool waitings);
+        /// <param name="workings">Clear the working clients?</param>
+        /// <param name="waitings">Clear the waiting clients?</param>
+        void Clear(bool workings, bool waitings);
     }
 }

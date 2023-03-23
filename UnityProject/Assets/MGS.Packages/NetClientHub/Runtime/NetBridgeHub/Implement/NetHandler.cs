@@ -22,7 +22,7 @@ namespace MGS.Net
         /// <summary>
         /// Client of handler.
         /// </summary>
-        public INetClient Client { get; }
+        public INetClient Client { protected set; get; }
 
         /// <summary>
         /// On speed changed event.
@@ -63,6 +63,18 @@ namespace MGS.Net
         /// </summary>
         public void NotifyStatus()
         {
+            if (speed != Client.Speed)
+            {
+                speed = Client.Speed;
+                OnSpeedChanged?.Invoke(speed);
+            }
+
+            if (progress != Client.Progress)
+            {
+                progress = Client.Progress;
+                OnProgressChanged?.Invoke(progress);
+            }
+
             if (Client.IsDone)
             {
                 if (!string.IsNullOrEmpty(Client.Result) || Client.Error != null)
@@ -70,19 +82,19 @@ namespace MGS.Net
                     OnCompleted?.Invoke(Client.Result, Client.Error);
                 }
             }
-            else
-            {
-                if (speed != Client.Speed)
-                {
-                    speed = Client.Speed;
-                    OnSpeedChanged?.Invoke(speed);
-                }
-                if (progress != Client.Progress)
-                {
-                    progress = Client.Progress;
-                    OnProgressChanged?.Invoke(progress);
-                }
-            }
+        }
+
+        /// <summary>
+        /// Dispose resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Client.Dispose();
+            Client = null;
+
+            OnSpeedChanged = null;
+            OnProgressChanged = null;
+            OnCompleted = null;
         }
     }
 }

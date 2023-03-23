@@ -57,8 +57,19 @@ namespace MGS.Net
         /// <param name="url"></param>
         protected override void DoRequest(WebClientEx webClient, string url)
         {
+            webClient.UploadProgressChanged += WebClient_UploadProgressChanged;
             webClient.UploadDataCompleted += WebClient_UploadDataCompleted;
             webClient.UploadDataAsync(new Uri(url), Encoding.UTF8.GetBytes(PostData));
+        }
+
+        /// <summary>
+        /// UploadProgressChanged.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void WebClient_UploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
+        {
+            Progress = e.ProgressPercentage * 0.01f;
         }
 
         /// <summary>
@@ -68,7 +79,6 @@ namespace MGS.Net
         /// <param name="e"></param>
         private void WebClient_UploadDataCompleted(object sender, UploadDataCompletedEventArgs e)
         {
-            Progress = e.Error == null ? 1 : 0;
             Size = e.Result.LongLength;
             Result = Encoding.UTF8.GetString(e.Result);
             Error = e.Error;

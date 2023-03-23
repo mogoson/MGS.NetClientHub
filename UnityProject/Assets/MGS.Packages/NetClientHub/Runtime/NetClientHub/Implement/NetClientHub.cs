@@ -107,11 +107,11 @@ namespace MGS.Net
         }
 
         /// <summary>
-        /// Discard net clients.
+        /// Clear cache resources.
         /// </summary>
-        /// <param name="workings">Discard the working clients?</param>
-        /// <param name="waitings">Discard the waiting clients?</param>
-        public virtual void Discard(bool workings, bool waitings)
+        /// <param name="workings">Clear the working clients?</param>
+        /// <param name="waitings">Clear the waiting clients?</param>
+        public virtual void Clear(bool workings, bool waitings)
         {
             if (workings)
             {
@@ -120,6 +120,11 @@ namespace MGS.Net
                     client.Close();
                 }
                 workingClients.Clear();
+
+                if (Resolver != null)
+                {
+                    Resolver.Clear();
+                }
             }
             if (waitings)
             {
@@ -132,16 +137,15 @@ namespace MGS.Net
         /// </summary>
         public virtual void Dispose()
         {
-            Discard(true, true);
+            Clear(true, true);
+            workingClients = null;
+            waitingClients = null;
 
             if (Resolver != null)
             {
                 Resolver.Dispose();
                 Resolver = null;
             }
-
-            workingClients = null;
-            waitingClients = null;
             isDisposed = true;
         }
 
@@ -160,7 +164,7 @@ namespace MGS.Net
         /// <summary>
         /// Update to dispatch clients.
         /// </summary>
-        protected virtual void TickUpdate()
+        protected void TickUpdate()
         {
             // Dequeue waitings to workings.
             while (waitingClients.Count > 0 && workingClients.Count < Concurrency)
@@ -218,7 +222,13 @@ namespace MGS.Net
         /// On client is done.
         /// </summary>
         /// <param name="client"></param>
-        protected virtual void OnClientIsDone(INetClient client) { }
+        protected virtual void OnClientIsDone(INetClient client)
+        {
+            if (Resolver != null)
+            {
+                Resolver.Clear(client);
+            }
+        }
 
         /// <summary>
         /// Check client is retrieable?

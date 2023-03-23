@@ -31,5 +31,10 @@ namespace MGS.Net
         /// </summary>
         /// <param name="client"></param>
         void Clear(INetClient client);
+
+        /// <summary>
+        /// Clear the history of all clients.
+        /// </summary>
+        void Clear();
     }
 }

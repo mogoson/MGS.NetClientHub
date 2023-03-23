@@ -23,9 +23,14 @@ namespace MGS.Net
     public class NetMonoHub : NetBridgeHub, INetMonoHub
     {
         /// <summary>
+        /// NetBehaviour to handle MonoBehaviour.
+        /// </summary>
+        protected class NetBehaviour : MonoBehaviour { }
+
+        /// <summary>
         /// Behaviour for hub to StartCoroutine.
         /// </summary>
-        protected MonoBehaviour behaviour;
+        protected NetBehaviour behaviour;
 
         /// <summary>
         /// Constructor.
@@ -38,7 +43,7 @@ namespace MGS.Net
             ICacher<INetClient> clientCacher = null, int concurrency = 3, INetResolver resolver = null)
             : base(resultCacher, clientCacher, concurrency, resolver)
         {
-            behaviour = new GameObject("NetBehaviour").AddComponent<MonoBehaviour>();
+            behaviour = new GameObject(typeof(NetBehaviour).Name).AddComponent<NetBehaviour>();
             behaviour.StartCoroutine(BehaviourTick());
             Object.DontDestroyOnLoad(behaviour.gameObject);
         }
@@ -49,6 +54,7 @@ namespace MGS.Net
         public override void Dispose()
         {
             base.Dispose();
+
             Object.Destroy(behaviour.gameObject);
             behaviour = null;
         }

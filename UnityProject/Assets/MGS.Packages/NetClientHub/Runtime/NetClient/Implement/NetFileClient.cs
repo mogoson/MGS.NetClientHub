@@ -61,6 +61,7 @@ namespace MGS.Net
             var tempFile = GetTempFilePath(url, FilePath);
             var tempSize = GetFileLength(tempFile);
             webClient.Range = tempSize;
+
             webClient.OpenReadCompleted += (s, e) => WebClient_OpenReadCompleted(s, e, tempFile, tempSize, FilePath);
             webClient.OpenReadAsync(new Uri(url));
         }
