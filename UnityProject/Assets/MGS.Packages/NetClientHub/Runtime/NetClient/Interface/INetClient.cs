@@ -57,7 +57,7 @@ namespace MGS.Net
         /// <summary>
         /// Result of work.
         /// </summary>
-        string Result { get; }
+        object Result { get; }
 
         /// <summary>
         /// Error of work.

@@ -13,9 +13,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Net;
-using System.Threading;
 
 namespace MGS.Net
 {
@@ -32,12 +30,22 @@ namespace MGS.Net
         /// <summary>
         /// Cycle(ms) of statistics.
         /// </summary>
-        protected const int STATISTICS_CYCLE = 500;
+        protected const int STATISTICS_CYCLE = 250;
 
         /// <summary>
         /// Path of local file.
         /// </summary>
         public string FilePath { protected set; get; }
+
+        /// <summary>
+        /// Path of temp file.
+        /// </summary>
+        private string tempFile;
+
+        /// <summary>
+        /// Size of temp file.
+        /// </summary>
+        private long tempSize;
 
         /// <summary>
         /// Constructor.
@@ -54,106 +62,64 @@ namespace MGS.Net
         /// <summary>
         /// Do request work.
         /// </summary>
-        /// <param name="webClient"></param>
+        /// <param name="request"></param>
         /// <param name="url"></param>
-        protected override void DoRequest(WebClientEx webClient, string url)
+        protected override void DoRequest(HttpWebRequest request)
         {
-            var tempFile = GetTempFilePath(url, FilePath);
-            var tempSize = GetFileLength(tempFile);
-            webClient.Range = tempSize;
+            tempFile = GetTempFilePath(URL, FilePath);
+            tempSize = GetFileLength(tempFile);
+            request.AddRange(tempSize);
 
-            webClient.OpenReadCompleted += (s, e) => WebClient_OpenReadCompleted(s, e, tempFile, tempSize, FilePath);
-            webClient.OpenReadAsync(new Uri(url));
+            base.DoRequest(request);
         }
 
         /// <summary>
-        /// OpenReadCompleted.
+        /// Read Result from stream.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <param name="tempFile"></param>
-        /// <param name="tempSize"></param>
-        /// <param name="destFile"></param>
-        protected void WebClient_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e, string tempFile, long tempSize, string destFile)
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        protected override object ReadResult(Stream stream)
         {
-            if (!e.Cancelled && e.Error == null)
-            {
-                var stream = e.Result;
-                Size = tempSize + stream.Length;
+            Size += tempSize;
+            RequireDirectory(tempFile);
 
-                var encoding = (sender as WebClientEx).ResponseHeaders["Content-Encoding"];
-                if (encoding == "gzip")
+            using (var fileStream = new FileStream(tempFile, FileMode.Append))
+            {
+                int readSize;
+                var buffer = new byte[BUFFER_SIZE];
+
+                float cacheSize = tempSize;
+                var statisticsSize = 0f;
+                var statisticsTimer = 0d;
+                var lastStatisticsTicks = DateTime.Now.Ticks;
+
+                //Not canceled and can read buffer.
+                while (!IsDone && (readSize = stream.Read(buffer, 0, buffer.Length)) > 0)
                 {
-                    stream = new GZipStream(stream, CompressionMode.Decompress);
-                }
-                var streamCopyThread = new Thread(() => CopyStreamToFile(stream, tempFile, tempSize, destFile)) { IsBackground = true };
-                streamCopyThread.Start();
-            }
-            else
-            {
-                Error = e.Error;
-                Close();
-            }
-        }
+                    fileStream.Write(buffer, 0, readSize);
 
-        /// <summary>
-        /// Copy data from source stream to local file stream.
-        /// </summary>
-        /// <param name="sourceStream"></param>
-        /// <param name="tempFile"></param>
-        /// <param name="tempSize"></param>
-        /// <param name="destFile"></param>
-        protected void CopyStreamToFile(Stream sourceStream, string tempFile, long tempSize, string destFile)
-        {
-            try
-            {
-                RequireDirectory(tempFile);
-                using (var fileStream = new FileStream(tempFile, FileMode.Append))
-                {
-                    int readSize;
-                    var buffer = new byte[BUFFER_SIZE];
+                    cacheSize += readSize;
+                    Progress = cacheSize / Size;
 
-                    float cacheSize = tempSize;
-                    var statisticsSize = 0f;
-                    var statisticsTimer = 0d;
-                    var lastStatisticsTicks = DateTime.Now.Ticks;
-
-                    while (!IsDone && (readSize = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
+                    statisticsSize += readSize;
+                    statisticsTimer = (DateTime.Now.Ticks - lastStatisticsTicks) * 1e-4;
+                    if (statisticsTimer >= STATISTICS_CYCLE)
                     {
-                        fileStream.Write(buffer, 0, readSize);
-
-                        cacheSize += readSize;
-                        Progress = cacheSize / Size;
-
-                        statisticsSize += readSize;
-                        statisticsTimer = (DateTime.Now.Ticks - lastStatisticsTicks) * 1e-4;
-                        if (statisticsTimer >= STATISTICS_CYCLE)
-                        {
-                            Speed = statisticsSize / (statisticsTimer * 1e-3);
-                            lastStatisticsTicks = DateTime.Now.Ticks;
-                            statisticsSize = 0;
-                        }
+                        Speed = statisticsSize / (statisticsTimer * 1e-3);
+                        lastStatisticsTicks = DateTime.Now.Ticks;
+                        statisticsSize = 0;
                     }
                 }
+                Speed = 0f;
+            }
 
-                if (!IsDone)
-                {
-                    RequireDirectory(destFile);
-                    File.Move(tempFile, destFile);
-                    Speed = 0f;
-                    Progress = 1.0f;
-                    Result = destFile;
-                }
-            }
-            catch (Exception ex)
+            //Not canceled.
+            if (!IsDone)
             {
-                Error = ex;
+                RequireDirectory(FilePath);
+                File.Move(tempFile, FilePath);
             }
-            finally
-            {
-                sourceStream.Close();
-                Close();
-            }
+            return FilePath;
         }
 
         /// <summary>

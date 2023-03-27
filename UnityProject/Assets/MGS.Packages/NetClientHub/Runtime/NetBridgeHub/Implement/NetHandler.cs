@@ -37,7 +37,7 @@ namespace MGS.Net
         /// <summary>
         /// On completed event.
         /// </summary>
-        public event Action<string, Exception> OnCompleted;
+        public event Action<object, Exception> OnCompleted;
 
         /// <summary>
         /// Last speed value.
@@ -77,7 +77,7 @@ namespace MGS.Net
 
             if (Client.IsDone)
             {
-                if (!string.IsNullOrEmpty(Client.Result) || Client.Error != null)
+                if (Client.Result != null || Client.Error != null)
                 {
                     OnCompleted?.Invoke(Client.Result, Client.Error);
                 }

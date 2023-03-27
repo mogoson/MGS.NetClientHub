@@ -63,15 +63,15 @@ namespace MGS.Net
         }
 
         /// <summary>
-        /// Put url to server.
+        /// Get url to server.
         /// </summary>
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public virtual INetClient PutAsync(string url, int timeout, IDictionary<string, string> headData = null)
+        public virtual INetClient GetAsync(string url, int timeout, IDictionary<string, string> headData = null)
         {
-            var client = new NetPutClient(url, timeout, headData) { DontSetDoneIfError = true };
+            var client = new NetGetClient(url, timeout, headData) { DontSetDoneIfError = true };
             waitingClients.Enqueue(client);
             return client;
         }

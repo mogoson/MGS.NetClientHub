@@ -39,7 +39,7 @@ namespace MGS.Net
         /// <param name="clientCacher">Cacher for net client.</param>
         /// <param name="concurrency">Max count of concurrency clients.</param>
         /// <param name="resolver">Net resolver to check retrieable.</param>
-        public NetMonoHub(ICacher<string> resultCacher = null,
+        public NetMonoHub(ICacher<object> resultCacher = null,
             ICacher<INetClient> clientCacher = null, int concurrency = 3, INetResolver resolver = null)
             : base(resultCacher, clientCacher, concurrency, resolver)
         {

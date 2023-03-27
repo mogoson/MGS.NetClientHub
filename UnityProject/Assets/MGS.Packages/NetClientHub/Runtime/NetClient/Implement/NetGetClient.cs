@@ -1,8 +1,8 @@
 ﻿/*************************************************************************
  *  Copyright © 2022 Mogoson. All rights reserved.
  *------------------------------------------------------------------------
- *  File         :  NetCacheClient.cs
- *  Description  :  Client for net cache data.
+ *  File         :  NetGetClient.cs
+ *  Description  :  Net get client.
  *------------------------------------------------------------------------
  *  Author       :  Mogoson
  *  Version      :  1.0
@@ -10,35 +10,34 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
 
 namespace MGS.Net
 {
     /// <summary>
-    /// Client for cache data.
+    /// Net get client.
     /// </summary>
-    public class NetCacheClient : NetClient
+    public class NetGetClient : NetClient
     {
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="url">Remote url string.</param>
-        /// <param name="result">Result cache data.</param>
-        public NetCacheClient(string url, object result) : base(url, 0)
+        /// <param name="timeout">Timeout(ms) of request.</param>
+        /// <param name="headData">Head data of request.</param>
+        public NetGetClient(string url, int timeout, IDictionary<string, string> headData = null) : base(url, timeout, headData) { }
+
+        /// <summary>
+        /// Do request work.
+        /// </summary>
+        /// <param name="request"></param>
+        protected override void DoRequest(HttpWebRequest request)
         {
-            Result = result;
-            IsDone = true;
+            request.Method = "GET";
+            base.DoRequest(request);
         }
-
-        /// <summary>
-        /// Open client(do nothing in this case).
-        /// </summary>
-        public override void Open() { }
-
-        /// <summary>
-        /// Close client(do nothing in this case).
-        /// </summary>
-        public override void Close() { }
 
         /// <summary>
         /// Read Result from stream.
@@ -47,7 +46,10 @@ namespace MGS.Net
         /// <returns></returns>
         protected override object ReadResult(Stream stream)
         {
-            return null;
+            using (var reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
         }
     }
 }

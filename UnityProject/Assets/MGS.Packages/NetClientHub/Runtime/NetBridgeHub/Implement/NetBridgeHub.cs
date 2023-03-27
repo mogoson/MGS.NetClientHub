@@ -38,7 +38,7 @@ namespace MGS.Net
         /// <param name="clientCacher">Cacher for net client.</param>
         /// <param name="concurrency">Max count of concurrency clients.</param>
         /// <param name="resolver">Net resolver to check retrieable.</param>
-        public NetBridgeHub(ICacher<string> resultCacher = null,
+        public NetBridgeHub(ICacher<object> resultCacher = null,
             ICacher<INetClient> clientCacher = null, int concurrency = 3, INetResolver resolver = null)
             : base(resultCacher, clientCacher, concurrency, resolver) { }
 
@@ -63,15 +63,15 @@ namespace MGS.Net
         }
 
         /// <summary>
-        /// Put url to server.
+        /// Get url to server.
         /// </summary>
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public new INetHandler PutAsync(string url, int timeout, IDictionary<string, string> headData = null)
+        public new INetHandler GetAsync(string url, int timeout, IDictionary<string, string> headData = null)
         {
-            var client = base.PutAsync(url, timeout, headData);
+            var client = base.GetAsync(url, timeout, headData);
             return GetHandler(client);
         }
 

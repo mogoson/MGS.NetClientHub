@@ -20,7 +20,7 @@ namespace MGS.Net
         /// <summary>
         /// Cacher for net result.
         /// </summary>
-        ICacher<string> ResultCacher { set; get; }
+        ICacher<object> ResultCacher { set; get; }
 
         /// <summary>
         /// Cacher for net client.

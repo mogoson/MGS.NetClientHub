@@ -25,7 +25,7 @@ namespace MGS.Net
         /// <summary>
         /// Cacher for net result.
         /// </summary>
-        public ICacher<string> ResultCacher { set; get; }
+        public ICacher<object> ResultCacher { set; get; }
 
         /// <summary>
         /// Cacher for net client.
@@ -39,7 +39,7 @@ namespace MGS.Net
         /// <param name="clientCacher">Cacher for net client.</param>
         /// <param name="concurrency">Max count of concurrency clients.</param>
         /// <param name="resolver">Net resolver to check retrieable.</param>
-        public NetCacheHub(ICacher<string> resultCacher = null, ICacher<INetClient> clientCacher = null,
+        public NetCacheHub(ICacher<object> resultCacher = null, ICacher<INetClient> clientCacher = null,
             int concurrency = 3, INetResolver resolver = null) : base(concurrency, resolver)
         {
             ResultCacher = resultCacher;
@@ -47,19 +47,19 @@ namespace MGS.Net
         }
 
         /// <summary>
-        /// Put url to server.
+        /// Get url to server.
         /// </summary>
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public override INetClient PutAsync(string url, int timeout, IDictionary<string, string> headData = null)
+        public override INetClient GetAsync(string url, int timeout, IDictionary<string, string> headData = null)
         {
             var key = NetClient.GetKey(url);
             var client = GetCacheClient(url, key);
             if (client == null)
             {
-                client = base.PutAsync(url, timeout, headData);
+                client = base.GetAsync(url, timeout, headData);
                 SetCacheClient(key, client);
             }
             return client;
@@ -138,7 +138,7 @@ namespace MGS.Net
         /// <param name="client"></param>
         protected override void OnClientIsDone(INetClient client)
         {
-            if (!string.IsNullOrEmpty(client.Result))
+            if (client.Result != null)
             {
                 SetCacheResult(client.Key, client.Result);
             }
@@ -157,9 +157,9 @@ namespace MGS.Net
         protected INetClient GetCacheClient(string url, string key, bool checkFile = false)
         {
             var result = GetCacheResult(key);
-            if (!string.IsNullOrEmpty(result))
+            if (result != null)
             {
-                if (!checkFile || File.Exists(result))
+                if (!checkFile || File.Exists(result as string))
                 {
                     return new NetCacheClient(url, result);
                 }
@@ -173,7 +173,7 @@ namespace MGS.Net
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        protected string GetCacheResult(string key)
+        protected object GetCacheResult(string key)
         {
             if (ResultCacher == null)
             {
@@ -187,7 +187,7 @@ namespace MGS.Net
         /// </summary>
         /// <param name="key"></param>
         /// <param name="result"></param>
-        protected void SetCacheResult(string key, string result)
+        protected void SetCacheResult(string key, object result)
         {
             if (ResultCacher != null)
             {

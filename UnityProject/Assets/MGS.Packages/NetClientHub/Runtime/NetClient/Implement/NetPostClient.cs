@@ -10,8 +10,8 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text;
 
@@ -25,6 +25,7 @@ namespace MGS.Net
         /// <summary>
         /// Post data of request.
         /// </summary>
+        /// 
         public string PostData { protected set; get; }
 
         /// <summary>
@@ -53,36 +54,31 @@ namespace MGS.Net
         /// <summary>
         /// Do request work.
         /// </summary>
-        /// <param name="webClient"></param>
-        /// <param name="url"></param>
-        protected override void DoRequest(WebClientEx webClient, string url)
+        /// <param name="request"></param>
+        protected override void DoRequest(HttpWebRequest request)
         {
-            webClient.UploadProgressChanged += WebClient_UploadProgressChanged;
-            webClient.UploadDataCompleted += WebClient_UploadDataCompleted;
-            webClient.UploadDataAsync(new Uri(url), Encoding.UTF8.GetBytes(PostData));
+            request.Method = "POST";
+            var requestStream = request.GetRequestStream();
+
+            var postBuffer = Encoding.UTF8.GetBytes(PostData);
+            requestStream.Write(postBuffer, 0, postBuffer.Length);
+            requestStream.Close();
+            Progress = 0.5f;
+
+            base.DoRequest(request);
         }
 
         /// <summary>
-        /// UploadProgressChanged.
+        /// Read Result from stream.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void WebClient_UploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        protected override object ReadResult(Stream stream)
         {
-            Progress = e.ProgressPercentage * 0.01f;
-        }
-
-        /// <summary>
-        /// UploadDataCompleted.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void WebClient_UploadDataCompleted(object sender, UploadDataCompletedEventArgs e)
-        {
-            Size = e.Result.LongLength;
-            Result = Encoding.UTF8.GetString(e.Result);
-            Error = e.Error;
-            Close();
+            using (var reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
         }
     }
 }

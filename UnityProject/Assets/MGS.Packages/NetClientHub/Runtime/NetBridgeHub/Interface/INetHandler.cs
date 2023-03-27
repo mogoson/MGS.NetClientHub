@@ -37,7 +37,7 @@ namespace MGS.Net
         /// <summary>
         /// On completed event.
         /// </summary>
-        event Action<string, Exception> OnCompleted;
+        event Action<object, Exception> OnCompleted;
 
         /// <summary>
         /// Notify status of client.

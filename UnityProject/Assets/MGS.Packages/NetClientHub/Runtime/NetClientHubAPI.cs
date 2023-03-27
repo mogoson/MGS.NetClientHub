@@ -32,7 +32,7 @@ namespace MGS.Net
         static NetClientHubAPI()
         {
             //A cacher with timeout to cache the result from net client.
-            var resultCacher = new TimeoutCacher<string>(100, 5000);
+            var resultCacher = new TimeoutCacher<object>(100, 5000);
 
             //A cacher to cache the waiting and working client to reuse for the same url.
             var clientCacher = new Cacher<INetClient>(100);

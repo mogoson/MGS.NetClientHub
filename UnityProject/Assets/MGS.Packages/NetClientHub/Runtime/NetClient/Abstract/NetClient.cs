@@ -12,7 +12,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.IO.Compression;
+using System.Net;
+using System.Threading;
 
 namespace MGS.Net
 {
@@ -59,7 +62,7 @@ namespace MGS.Net
         /// <summary>
         /// Result of work.
         /// </summary>
-        public string Result { protected set; get; }
+        public object Result { protected set; get; }
 
         /// <summary>
         /// Error of work.
@@ -77,9 +80,14 @@ namespace MGS.Net
         protected IDictionary<string, string> headData;
 
         /// <summary>
-        /// WebClient to connect remote.
+        /// HttpWebRequest to connect remote.
         /// </summary>
-        protected WebClientEx webClient;
+        protected HttpWebRequest request;
+
+        /// <summary>
+        /// Thread to do net work.
+        /// </summary>
+        protected Thread thread;
 
         /// <summary>
         /// Constructor.
@@ -110,21 +118,15 @@ namespace MGS.Net
         /// </summary>
         public virtual void Open()
         {
-            if (webClient == null)
+            if (request == null)
             {
                 Reset();
-                webClient = new WebClientEx(Timeout)
-                {
-                    Encoding = Encoding.UTF8
-                };
 
-                AddHeaders(webClient, headData);
-                try { DoRequest(webClient, URL); }
-                catch (Exception ex)
-                {
-                    Error = ex;
-                    Close();
-                }
+                request = CreateWebRequest(URL);
+                AddHeaders(request, headData);
+
+                thread = CreateRequestThread(request);
+                thread.Start();
             }
         }
 
@@ -133,10 +135,19 @@ namespace MGS.Net
         /// </summary>
         public virtual void Close()
         {
-            if (webClient != null)
+            if (thread != null)
             {
-                webClient.Dispose();
-                webClient = null;
+                if (thread.IsAlive)
+                {
+                    thread.Abort();
+                }
+                thread = null;
+            }
+
+            if (request != null)
+            {
+                request.Abort();
+                request = null;
             }
 
             if (Error == null || !DontSetDoneIfError)
@@ -169,11 +180,26 @@ namespace MGS.Net
         }
 
         /// <summary>
+        /// Create HttpWebRequest for url.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        protected HttpWebRequest CreateWebRequest(string url)
+        {
+            var webRequest = WebRequest.CreateHttp(url);
+            {
+                webRequest.Timeout = Timeout;
+                webRequest.ReadWriteTimeout = Timeout;
+            }
+            return webRequest;
+        }
+
+        /// <summary>
         /// Add header data to WebClient.
         /// </summary>
-        /// <param name="webClient"></param>
+        /// <param name="request"></param>
         /// <param name="headData"></param>
-        protected void AddHeaders(WebClientEx webClient, IDictionary<string, string> headData)
+        protected void AddHeaders(HttpWebRequest request, IDictionary<string, string> headData)
         {
             if (headData == null || headData.Count == 0)
             {
@@ -182,15 +208,65 @@ namespace MGS.Net
 
             foreach (var data in headData)
             {
-                webClient.Headers.Add(data.Key, data.Value);
+                if (data.Key == "Content-Type")
+                {
+                    request.ContentType = data.Value;
+                    continue;
+                }
+                request.Headers.Add(data.Key, data.Value);
             }
+        }
+
+        /// <summary>
+        /// Create Thread to do web request work.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected Thread CreateRequestThread(HttpWebRequest request)
+        {
+            return new Thread(() =>
+            {
+                try
+                {
+                    DoRequest(request);
+                }
+                catch (Exception ex)
+                {
+                    Error = ex;
+                    Close();
+                }
+            })
+            { IsBackground = true };
         }
 
         /// <summary>
         /// Do request work.
         /// </summary>
-        /// <param name="webClient"></param>
-        /// <param name="url"></param>
-        protected abstract void DoRequest(WebClientEx webClient, string url);
+        /// <param name="request"></param>
+        protected virtual void DoRequest(HttpWebRequest request)
+        {
+            var response = request.GetResponse();
+            Size = response.ContentLength;
+
+            var encoding = response.Headers.Get("Content-Encoding");
+            var responseStream = response.GetResponseStream();
+            if (encoding == "gzip")
+            {
+                responseStream = new GZipStream(responseStream, CompressionMode.Decompress);
+            }
+
+            Result = ReadResult(responseStream);
+            responseStream.Close();
+
+            Progress = 1.0f;
+            IsDone = true;
+        }
+
+        /// <summary>
+        /// Read Result from stream.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        protected abstract object ReadResult(Stream stream);
     }
 }

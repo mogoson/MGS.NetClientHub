@@ -1,7 +1,7 @@
 ﻿/*************************************************************************
  *  Copyright © 2022 Mogoson. All rights reserved.
  *------------------------------------------------------------------------
- *  File         :  TestPut.cs
+ *  File         :  TestGet.cs
  *  Description  :  Ignore.
  *------------------------------------------------------------------------
  *  Author       :  Mogoson
@@ -12,19 +12,18 @@
 
 #define LISTEN_NOTIFY
 
-using System.IO;
 using UnityEngine;
 
 namespace MGS.Net.Demo
 {
-    public class TestPut : MonoBehaviour
+    public class TestGet : MonoBehaviour
     {
         public string url;
         INetHandler handler;
 
         void Start()
         {
-            handler = NetClientHubAPI.handler.PutAsync(url, 120000);
+            handler = NetClientHubAPI.handler.GetAsync(url, 120000);
 
 #if LISTEN_NOTIFY
             handler.OnProgressChanged += progress => Debug.Log($"progress: {progress.ToString("f3")}");

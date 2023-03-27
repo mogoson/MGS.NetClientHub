@@ -27,13 +27,13 @@ namespace MGS.Net
         void Update();
 
         /// <summary>
-        /// Put url to server.
+        /// Get url to server.
         /// </summary>
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        new INetHandler PutAsync(string url, int timeout, IDictionary<string, string> headData = null);
+        new INetHandler GetAsync(string url, int timeout, IDictionary<string, string> headData = null);
 
         /// <summary>
         /// Post url and data to server.
