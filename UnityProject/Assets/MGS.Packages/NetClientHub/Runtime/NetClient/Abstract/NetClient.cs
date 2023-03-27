@@ -260,6 +260,9 @@ namespace MGS.Net
 
             Progress = 1.0f;
             IsDone = true;
+
+            thread = null;
+            request = null;
         }
 
         /// <summary>
