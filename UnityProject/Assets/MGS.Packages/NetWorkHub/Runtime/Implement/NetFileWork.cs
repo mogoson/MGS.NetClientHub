@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
-namespace MGS.Work
+namespace MGS.Work.Net
 {
     /// <summary>
     /// Net file work.

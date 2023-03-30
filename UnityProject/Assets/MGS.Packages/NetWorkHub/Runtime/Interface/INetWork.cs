@@ -10,7 +10,7 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
-namespace MGS.Work
+namespace MGS.Work.Net
 {
     /// <summary>
     /// Interface of work to connect remote.

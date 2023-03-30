@@ -15,7 +15,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 
-namespace MGS.Work
+namespace MGS.Work.Net
 {
     /// <summary>
     /// Net work abstract implement.

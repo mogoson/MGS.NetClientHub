@@ -15,7 +15,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace MGS.Work
+namespace MGS.Work.Net
 {
     /// <summary>
     /// Net post work.
