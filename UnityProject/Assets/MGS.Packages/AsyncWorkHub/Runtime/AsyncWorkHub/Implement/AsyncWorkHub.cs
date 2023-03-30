@@ -65,9 +65,10 @@ namespace MGS.Work
         /// <summary>
         /// Enqueue work to hub.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="work"></param>
         /// <returns></returns>
-        public virtual IAsyncWork EnqueueWork(IAsyncWork work)
+        public virtual IAsyncWork<T> EnqueueWork<T>(IAsyncWork<T> work)
         {
             waitingWorks.Enqueue(work);
             return work;

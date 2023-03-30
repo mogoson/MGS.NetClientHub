@@ -20,7 +20,7 @@ namespace MGS.Work.Net
     /// <summary>
     /// Net post work.
     /// </summary>
-    public class NetPostWork : NetWork
+    public class NetPostWork : NetWork<string>
     {
         /// <summary>
         /// Post data of request.
@@ -72,7 +72,7 @@ namespace MGS.Work.Net
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        protected override object ReadResult(Stream stream)
+        protected override string ReadResult(Stream stream)
         {
             using (var reader = new StreamReader(stream))
             {

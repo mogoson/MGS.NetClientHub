@@ -48,21 +48,10 @@ namespace MGS.Work
         /// </summary>
         /// <param name="work"></param>
         /// <returns></returns>
-        public new IAsyncWorkHandler EnqueueWork(IAsyncWork work)
+        public new IAsyncWorkHandler<T> EnqueueWork<T>(IAsyncWork<T> work)
         {
             var enWork = base.EnqueueWork(work);
             return GetHandler(enWork);
-        }
-
-        /// <summary>
-        /// Enqueue work to hub.
-        /// </summary>
-        /// <param name="work"></param>
-        /// <returns></returns>
-        public IAsyncWorkHandler<T> EnqueueWork<T>(IAsyncWork<T> work)
-        {
-            var enWork = base.EnqueueWork(work);
-            return GetHandler(enWork as IAsyncWork<T>);
         }
 
         /// <summary>
@@ -103,23 +92,6 @@ namespace MGS.Work
         {
             base.Dispose();
             handlers = null;
-        }
-
-        /// <summary>
-        /// Get handler for work.
-        /// </summary>
-        /// <param name="work"></param>
-        /// <returns></returns>
-        protected IAsyncWorkHandler GetHandler(IAsyncWork work)
-        {
-            if (handlers.ContainsKey(work.Key))
-            {
-                return handlers[work.Key];
-            }
-
-            var handler = new AsyncWorkHandler(work);
-            handlers.Add(work.Key, handler);
-            return handler;
         }
 
         /// <summary>

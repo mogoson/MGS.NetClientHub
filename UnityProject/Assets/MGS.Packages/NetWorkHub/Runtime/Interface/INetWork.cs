@@ -15,7 +15,7 @@ namespace MGS.Work.Net
     /// <summary>
     /// Interface of work to connect remote.
     /// </summary>
-    public interface INetWork : IAsyncWork
+    public interface INetWork<T> : IAsyncWork<T>
     {
         /// <summary>
         /// Remote url string.

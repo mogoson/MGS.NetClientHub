@@ -1,8 +1,8 @@
 ﻿/*************************************************************************
  *  Copyright © 2022 Mogoson. All rights reserved.
  *------------------------------------------------------------------------
- *  File         :  CacheWork.cs
- *  Description  :  Work for cache data.
+ *  File         :  AsyncWorkT.cs
+ *  Description  :  Async work abstract implement.
  *------------------------------------------------------------------------
  *  Author       :  Mogoson
  *  Version      :  1.0
@@ -13,23 +13,17 @@
 namespace MGS.Work
 {
     /// <summary>
-    /// Work for cache data.
+    /// Async work abstract implement.
     /// </summary>
-    public class CacheWork<T> : AsyncWork<T>
+    public abstract class AsyncWork<T> : AsyncWork, IAsyncWork<T>
     {
         /// <summary>
-        /// Constructor.
+        /// Result of work.
         /// </summary>
-        /// <param name="result">Result cache data.</param>
-        public CacheWork(T result)
+        public new virtual T Result
         {
-            Result = result;
-            IsDone = true;
+            protected set { base.Result = value; }
+            get { return (T)base.Result; }
         }
-
-        /// <summary>
-        /// Execute work operation.
-        /// </summary>
-        public override void Execute() { }
     }
 }

@@ -23,7 +23,7 @@ namespace MGS.Work.Demo
 
         void Start()
         {
-            handler = NetWorkHubHandler.GetAsync(url, 120000);
+            //handler = NetWorkHubHandler.GetAsync(url, 120000);
 
 #if LISTEN_NOTIFY
             handler.OnProgressChanged += progress => Debug.Log($"progress: {progress.ToString("f3")}");

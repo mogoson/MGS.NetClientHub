@@ -17,7 +17,7 @@ namespace MGS.Work
     /// <summary>
     /// Async step work abstract implement.
     /// </summary>
-    public class AsyncStepWork : AsyncWork
+    public class AsyncStepWork<T> : AsyncWork<T>
     {
         /// <summary>
         /// Step works.
@@ -111,7 +111,7 @@ namespace MGS.Work
                 progress += work.Progress * weights[step];
                 step++;
             }
-            Result = work.Result;
+            Result = (T)work.Result;
         }
 
         /// <summary>

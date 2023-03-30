@@ -20,7 +20,7 @@ namespace MGS.Work.Net
     /// <summary>
     /// Net file work.
     /// </summary>
-    public class NetFileWork : NetWork
+    public class NetFileWork : NetWork<string>
     {
         /// <summary>
         /// Size(byte) of buffer to copy stream.
@@ -78,7 +78,7 @@ namespace MGS.Work.Net
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        protected override object ReadResult(Stream stream)
+        protected override string ReadResult(Stream stream)
         {
             Size += tempSize;
             RequireDirectory(tempFile);

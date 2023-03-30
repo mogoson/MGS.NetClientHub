@@ -25,7 +25,7 @@ namespace MGS.Work.Demo
         void Start()
         {
             var file = string.Format("{0}/{1}", Application.dataPath, Path.GetFileName(url));
-            handler = NetWorkHubHandler.DownloadAsync(url, 120000, file);
+            //handler = NetWorkHubHandler.DownloadAsync(url, 120000, file);
 
 #if LISTEN_NOTIFY
             handler.OnProgressChanged += progress => Debug.Log($"progress: {progress.ToString("f3")}");

@@ -32,9 +32,10 @@ namespace MGS.Work
         /// <summary>
         /// Enqueue work to hub.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="work"></param>
         /// <returns></returns>
-        IAsyncWork EnqueueWork(IAsyncWork work);
+        IAsyncWork<T> EnqueueWork<T>(IAsyncWork<T> work);
 
         /// <summary>
         /// Clear cache resources.

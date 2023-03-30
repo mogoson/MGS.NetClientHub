@@ -28,7 +28,8 @@ namespace MGS.Work.Net
         public static IAsyncWorkHandler GetAsync(string url, int timeout, IDictionary<string, string> headData = null)
         {
             var work = new NetGetWork(url, timeout, headData);
-            return WorkHubHandler.API.EnqueueWork(work);
+            //return WorkHubHandler.API.EnqueueWork(work);
+            return null;
         }
 
         /// <summary>
@@ -41,7 +42,8 @@ namespace MGS.Work.Net
         public static IAsyncWorkHandler PostAsync(string url, int timeout, string postData, IDictionary<string, string> headData = null)
         {
             var work = new NetPostWork(url, timeout, postData, headData);
-            return WorkHubHandler.API.EnqueueWork(work);
+            //return WorkHubHandler.API.EnqueueWork(work);
+            return null;
         }
 
         /// <summary>
@@ -55,7 +57,8 @@ namespace MGS.Work.Net
         public static IAsyncWorkHandler DownloadAsync(string url, int timeout, string filePath, IDictionary<string, string> headData = null)
         {
             var work = new NetFileWork(url, timeout, filePath, headData);
-            return WorkHubHandler.API.EnqueueWork(work);
+            //return WorkHubHandler.API.EnqueueWork(work);
+            return null;
         }
     }
 }

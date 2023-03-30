@@ -46,11 +46,12 @@ namespace MGS.Work
         /// <summary>
         /// Enqueue work to hub.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="work"></param>
         /// <returns></returns>
-        public override IAsyncWork EnqueueWork(IAsyncWork work)
+        public override IAsyncWork<T> EnqueueWork<T>(IAsyncWork<T> work)
         {
-            var enWork = GetCacheAsWork(work.Key);
+            var enWork = GetCacheAsWork<T>(work.Key);
             if (enWork == null)
             {
                 enWork = base.EnqueueWork(work);
@@ -104,17 +105,18 @@ namespace MGS.Work
         /// <summary>
         /// Get work from one of the cachers(ResultCacher/WorksCacher).
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        protected IAsyncWork GetCacheAsWork(string key)
+        protected IAsyncWork<T> GetCacheAsWork<T>(string key)
         {
             var result = GetCacheResult(key);
-            if (result != null)
+            if (result is T resultT)
             {
-                return new CacheWork(result);
+                return new CacheWork<T>(resultT);
             }
 
-            return GetCacheWork(key);
+            return GetCacheWork(key) as IAsyncWork<T>;
         }
 
         /// <summary>

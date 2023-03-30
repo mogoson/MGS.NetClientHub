@@ -19,7 +19,7 @@ namespace MGS.Work.Net
     /// <summary>
     /// Net get work.
     /// </summary>
-    public class NetGetWork : NetWork
+    public class NetGetWork : NetWork<string>
     {
         /// <summary>
         /// Constructor.
@@ -44,7 +44,7 @@ namespace MGS.Work.Net
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        protected override object ReadResult(Stream stream)
+        protected override string ReadResult(Stream stream)
         {
             using (var reader = new StreamReader(stream))
             {

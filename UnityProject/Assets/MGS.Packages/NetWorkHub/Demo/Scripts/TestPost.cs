@@ -26,7 +26,7 @@ namespace MGS.Work.Demo
         void Start()
         {
             var header = new Dictionary<string, string>() { { "Content-Type", "application/json" } };
-            handler = NetWorkHubHandler.PostAsync(url, 120000, body, header);
+            //handler = NetWorkHubHandler.PostAsync(url, 120000, body, header);
 
 #if LISTEN_NOTIFY
             handler.OnProgressChanged += progress => Debug.Log($"progress: {progress.ToString("f3")}");

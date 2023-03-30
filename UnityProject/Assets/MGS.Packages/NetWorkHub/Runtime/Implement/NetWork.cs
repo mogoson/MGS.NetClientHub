@@ -20,7 +20,7 @@ namespace MGS.Work.Net
     /// <summary>
     /// Net work abstract implement.
     /// </summary>
-    public abstract class NetWork : AsyncWork, INetWork
+    public abstract class NetWork<T> : AsyncWork<T>, INetWork<T>
     {
         /// <summary>
         /// Remote url string.
@@ -167,6 +167,6 @@ namespace MGS.Work.Net
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        protected abstract object ReadResult(Stream stream);
+        protected abstract T ReadResult(Stream stream);
     }
 }

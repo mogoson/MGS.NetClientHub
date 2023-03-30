@@ -1,7 +1,7 @@
 ﻿/*************************************************************************
  *  Copyright © 2023 Mogoson. All rights reserved.
  *------------------------------------------------------------------------
- *  File         :  AsyncWorkHandler.cs
+ *  File         :  AsyncWorkHandlerT.cs
  *  Description  :  Handler to manage work status.
  *------------------------------------------------------------------------
  *  Author       :  Mogoson
@@ -22,7 +22,11 @@ namespace MGS.Work
         /// <summary>
         /// Work of handler.
         /// </summary>
-        public new IAsyncWork<T> Work { protected set; get; }
+        public new IAsyncWork<T> Work
+        {
+            protected set { base.Work = value; }
+            get { return base.Work as IAsyncWork<T>; }
+        }
 
         /// <summary>
         /// On completed event.
@@ -33,10 +37,7 @@ namespace MGS.Work
         /// Constructor.
         /// </summary>
         /// <param name="work"></param>
-        public AsyncWorkHandler(IAsyncWork<T> work) : base(work)
-        {
-            Work = work;
-        }
+        public AsyncWorkHandler(IAsyncWork<T> work) : base(work) { }
 
         /// <summary>
         /// Dispose all resources.
@@ -44,9 +45,6 @@ namespace MGS.Work
         public override void Dispose()
         {
             base.Dispose();
-
-            Work.Dispose();
-            Work = null;
             OnCompleted = null;
         }
 
