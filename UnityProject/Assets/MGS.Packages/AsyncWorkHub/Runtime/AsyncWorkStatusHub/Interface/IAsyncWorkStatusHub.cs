@@ -27,6 +27,13 @@ namespace MGS.Work
         new IAsyncWorkHandler EnqueueWork(IAsyncWork work);
 
         /// <summary>
+        /// Enqueue work to hub.
+        /// </summary>
+        /// <param name="work"></param>
+        /// <returns></returns>
+        IAsyncWorkHandler<T> EnqueueWork<T>(IAsyncWork<T> work);
+
+        /// <summary>
         /// Tick update to notify status.
         /// </summary>
         void TickStatus();

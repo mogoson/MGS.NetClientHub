@@ -55,6 +55,17 @@ namespace MGS.Work
         }
 
         /// <summary>
+        /// Enqueue work to hub.
+        /// </summary>
+        /// <param name="work"></param>
+        /// <returns></returns>
+        public IAsyncWorkHandler<T> EnqueueWork<T>(IAsyncWork<T> work)
+        {
+            var enWork = base.EnqueueWork(work);
+            return GetHandler(enWork as IAsyncWork<T>);
+        }
+
+        /// <summary>
         /// Tick update to notify status.
         /// </summary>
         public void TickStatus()
@@ -107,6 +118,24 @@ namespace MGS.Work
             }
 
             var handler = new AsyncWorkHandler(work);
+            handlers.Add(work.Key, handler);
+            return handler;
+        }
+
+        /// <summary>
+        /// Get handler for work.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="work"></param>
+        /// <returns></returns>
+        protected IAsyncWorkHandler<T> GetHandler<T>(IAsyncWork<T> work)
+        {
+            if (handlers.ContainsKey(work.Key))
+            {
+                return handlers[work.Key] as IAsyncWorkHandler<T>;
+            }
+
+            var handler = new AsyncWorkHandler<T>(work);
             handlers.Add(work.Key, handler);
             return handler;
         }

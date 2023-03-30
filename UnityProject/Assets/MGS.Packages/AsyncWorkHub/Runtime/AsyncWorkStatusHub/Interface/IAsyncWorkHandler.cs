@@ -44,4 +44,21 @@ namespace MGS.Work
         /// </summary>
         void NotifyStatus();
     }
+
+    /// <summary>
+    /// Interface of handler to manage work status.
+    /// </summary>
+    /// <typeparam name="T">Type of work result.</typeparam>
+    public interface IAsyncWorkHandler<T> : IAsyncWorkHandler
+    {
+        /// <summary>
+        /// Work of handler.
+        /// </summary>
+        new IAsyncWork<T> Work { get; }
+
+        /// <summary>
+        /// On completed event.
+        /// </summary>
+        new event Action<T, Exception> OnCompleted;
+    }
 }

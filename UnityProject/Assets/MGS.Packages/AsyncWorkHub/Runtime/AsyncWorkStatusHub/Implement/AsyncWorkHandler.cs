@@ -61,25 +61,25 @@ namespace MGS.Work
         /// <summary>
         /// Notify status of work.
         /// </summary>
-        public void NotifyStatus()
+        public virtual void NotifyStatus()
         {
             if (speed != Work.Speed)
             {
                 speed = Work.Speed;
-                OnSpeedChanged?.Invoke(speed);
+                InvokeOnSpeedChanged(speed);
             }
 
             if (progress != Work.Progress)
             {
                 progress = Work.Progress;
-                OnProgressChanged?.Invoke(progress);
+                InvokeOnProgressChanged(progress);
             }
 
             if (Work.IsDone)
             {
                 if (Work.Result != null || Work.Error != null)
                 {
-                    OnCompleted?.Invoke(Work.Result, Work.Error);
+                    InvokeOnCompleted(Work.Result, Work.Error);
                 }
             }
         }
@@ -87,7 +87,7 @@ namespace MGS.Work
         /// <summary>
         /// Dispose all resources.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             Work.Dispose();
             Work = null;
@@ -95,6 +95,34 @@ namespace MGS.Work
             OnSpeedChanged = null;
             OnProgressChanged = null;
             OnCompleted = null;
+        }
+
+        /// <summary>
+        /// Invoke OnSpeedChanged.
+        /// </summary>
+        /// <param name="speed"></param>
+        protected virtual void InvokeOnSpeedChanged(double speed)
+        {
+            OnSpeedChanged?.Invoke(speed);
+        }
+
+        /// <summary>
+        /// Invoke OnProgressChanged.
+        /// </summary>
+        /// <param name="progress"></param>
+        protected virtual void InvokeOnProgressChanged(float progress)
+        {
+            OnProgressChanged?.Invoke(progress);
+        }
+
+        /// <summary>
+        /// Invoke OnCompleted.
+        /// </summary>
+        /// <param name="result"></param>
+        /// <param name="error"></param>
+        protected virtual void InvokeOnCompleted(object result, Exception error)
+        {
+            OnCompleted?.Invoke(result, error);
         }
     }
 }

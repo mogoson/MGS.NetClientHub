@@ -74,4 +74,16 @@ namespace MGS.Work
         /// </summary>
         void AbortAsync();
     }
+
+    /// <summary>
+    /// Interface of async work.
+    /// </summary>
+    /// <typeparam name="T">Type of work result.</typeparam>
+    public interface IAsyncWork<T> : IAsyncWork
+    {
+        /// <summary>
+        /// Result of work.
+        /// </summary>
+        new T Result { get; }
+    }
 }
