@@ -20,50 +20,6 @@ namespace MGS.Work
     public class AsyncStepWork<T> : AsyncWork<T>
     {
         /// <summary>
-        /// Step works.
-        /// </summary>
-        protected IEnumerable<IAsyncWork> works;
-
-        /// <summary>
-        /// Current execute work.
-        /// </summary>
-        protected IAsyncWork work;
-
-        /// <summary>
-        /// Progress of completed works.
-        /// </summary>
-        protected float progress;
-
-        /// <summary>
-        /// Current execute step.
-        /// </summary>
-        protected int step;
-
-        /// <summary>
-        /// Weights for each work.
-        /// </summary>
-        protected float[] weights;
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="works">Step works.</param>
-        /// <param name="weights">Weights for each work.</param>
-        public AsyncStepWork(ICollection<IAsyncWork> works, float[] weights = null)
-        {
-            this.works = works;
-            if (weights == null)
-            {
-                weights = new float[works.Count];
-                var weight = 1.0f / weights.Length;
-                for (int i = 0; i < weights.Length; i++)
-                {
-                    weights[i] = weight;
-                }
-            }
-        }
-
-        /// <summary>
         /// Speed(byte/s) of work..
         /// </summary>
         public override double Speed
@@ -94,12 +50,59 @@ namespace MGS.Work
         }
 
         /// <summary>
+        /// Step works.
+        /// </summary>
+        protected IEnumerable<IAsyncWork> works;
+
+        /// <summary>
+        /// Weights for each work.
+        /// </summary>
+        protected float[] weights;
+
+        /// <summary>
+        /// Current execute work.
+        /// </summary>
+        protected IAsyncWork work;
+
+        /// <summary>
+        /// Progress of completed works.
+        /// </summary>
+        protected float progress;
+
+        /// <summary>
+        /// Current execute step.
+        /// </summary>
+        protected int step;
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="works">Step works.</param>
+        /// <param name="weights">Weights for each work.</param>
+        public AsyncStepWork(ICollection<IAsyncWork> works, float[] weights = null)
+        {
+            this.works = works;
+            if (weights == null)
+            {
+                weights = new float[works.Count];
+                var weight = 1.0f / weights.Length;
+                for (int i = 0; i < weights.Length; i++)
+                {
+                    weights[i] = weight;
+                }
+            }
+            this.weights = weights;
+        }
+
+        /// <summary>
         /// Execute work operation.
         /// </summary>
         public override void Execute()
         {
+            step = -1;
             foreach (var work in works)
             {
+                step++;
                 this.work = work;
                 work.Execute();
 
@@ -109,7 +112,6 @@ namespace MGS.Work
                     break;
                 }
                 progress += work.Progress * weights[step];
-                step++;
             }
             Result = (T)work.Result;
         }

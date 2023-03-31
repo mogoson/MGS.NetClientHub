@@ -16,14 +16,13 @@ using UnityEngine;
 
 namespace MGS.Work.Demo
 {
-    public class TestGet : MonoBehaviour
+    public class TestGet : TestNet
     {
-        public string url;
-        IAsyncWorkHandler<string> handler;
-
-        void Start()
+        protected override void Start()
         {
-            //handler = NetWorkHubHandler.GetAsync(url, 120000);
+            base.Start();
+
+            handler = hub.GetAsync(url, 120000);
 
 #if LISTEN_NOTIFY
             handler.OnProgressChanged += progress => Debug.Log($"progress: {progress.ToString("f3")}");
@@ -56,9 +55,5 @@ namespace MGS.Work.Demo
             }
         }
 #endif
-        void OnDestroy()
-        {
-            handler.Dispose();
-        }
     }
 }

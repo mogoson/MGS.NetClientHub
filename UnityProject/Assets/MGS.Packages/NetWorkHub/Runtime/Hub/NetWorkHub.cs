@@ -1,8 +1,8 @@
 ﻿/*************************************************************************
  *  Copyright © 2022 Mogoson. All rights reserved.
  *------------------------------------------------------------------------
- *  File         :  NetWorkHubHandler.cs
- *  Description  :  Handler of net work hub.
+ *  File         :  NetWorkHub.cs
+ *  Description  :  Hub to manage net works.
  *------------------------------------------------------------------------
  *  Author       :  Mogoson
  *  Version      :  1.0
@@ -15,21 +15,34 @@ using System.Collections.Generic;
 namespace MGS.Work.Net
 {
     /// <summary>
-    /// Handler of net work hub.
+    /// Hub to manage net works.
     /// </summary>
-    public sealed class NetWorkHubHandler
+    public class NetWorkHub : INetWorkHub
     {
+        /// <summary>
+        /// Async Work hub to manage net work.
+        /// </summary>
+        public IAsyncWorkStatusHub AsyncHub { set; get; }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="asyncHub"></param>
+        public NetWorkHub(IAsyncWorkStatusHub asyncHub)
+        {
+            AsyncHub = asyncHub;
+        }
+
         /// <summary>
         /// Get from remote async.
         /// </summary>
         /// <param name="url">Remote url string.</param>
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="headData">Head data of request.</param>
-        public static IAsyncWorkHandler GetAsync(string url, int timeout, IDictionary<string, string> headData = null)
+        public IAsyncWorkHandler<string> GetAsync(string url, int timeout, IDictionary<string, string> headData = null)
         {
             var work = new NetGetWork(url, timeout, headData);
-            //return WorkHubHandler.API.EnqueueWork(work);
-            return null;
+            return AsyncHub.EnqueueWork(work);
         }
 
         /// <summary>
@@ -39,11 +52,10 @@ namespace MGS.Work.Net
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="postData">Post data of request.</param>
         /// <param name="headData">Head data of request.</param>
-        public static IAsyncWorkHandler PostAsync(string url, int timeout, string postData, IDictionary<string, string> headData = null)
+        public IAsyncWorkHandler<string> PostAsync(string url, int timeout, string postData, IDictionary<string, string> headData = null)
         {
             var work = new NetPostWork(url, timeout, postData, headData);
-            //return WorkHubHandler.API.EnqueueWork(work);
-            return null;
+            return AsyncHub.EnqueueWork(work);
         }
 
         /// <summary>
@@ -54,11 +66,19 @@ namespace MGS.Work.Net
         /// <param name="filePath">Path of local file.</param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        public static IAsyncWorkHandler DownloadAsync(string url, int timeout, string filePath, IDictionary<string, string> headData = null)
+        public IAsyncWorkHandler<string> DownloadAsync(string url, int timeout, string filePath, IDictionary<string, string> headData = null)
         {
             var work = new NetFileWork(url, timeout, filePath, headData);
-            //return WorkHubHandler.API.EnqueueWork(work);
-            return null;
+            return AsyncHub.EnqueueWork(work);
+        }
+
+        /// <summary>
+        /// Dispose all resources.
+        /// </summary>
+        public virtual void Dispose()
+        {
+            AsyncHub.Dispose();
+            AsyncHub = null;
         }
     }
 }

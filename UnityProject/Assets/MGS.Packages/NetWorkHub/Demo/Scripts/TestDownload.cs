@@ -17,15 +17,14 @@ using UnityEngine;
 
 namespace MGS.Work.Demo
 {
-    public class TestDownload : MonoBehaviour
+    public class TestDownload : TestNet
     {
-        public string url;
-        IAsyncWorkHandler<string> handler;
-
-        void Start()
+        protected override void Start()
         {
+            base.Start();
+
             var file = string.Format("{0}/{1}", Application.dataPath, Path.GetFileName(url));
-            //handler = NetWorkHubHandler.DownloadAsync(url, 120000, file);
+            handler = hub.DownloadAsync(url, 120000, file);
 
 #if LISTEN_NOTIFY
             handler.OnProgressChanged += progress => Debug.Log($"progress: {progress.ToString("f3")}");
@@ -78,9 +77,5 @@ namespace MGS.Work.Demo
             }
         }
 #endif
-        void OnDestroy()
-        {
-            handler.Dispose();
-        }
     }
 }

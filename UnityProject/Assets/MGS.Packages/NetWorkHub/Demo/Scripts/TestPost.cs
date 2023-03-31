@@ -17,16 +17,16 @@ using UnityEngine;
 
 namespace MGS.Work.Demo
 {
-    public class TestPost : MonoBehaviour
+    public class TestPost : TestNet
     {
-        public string url;
         public string body;
-        IAsyncWorkHandler<string> handler;
 
-        void Start()
+        protected override void Start()
         {
+            base.Start();
+
             var header = new Dictionary<string, string>() { { "Content-Type", "application/json" } };
-            //handler = NetWorkHubHandler.PostAsync(url, 120000, body, header);
+            handler = hub.PostAsync(url, 120000, body, header);
 
 #if LISTEN_NOTIFY
             handler.OnProgressChanged += progress => Debug.Log($"progress: {progress.ToString("f3")}");
@@ -59,9 +59,5 @@ namespace MGS.Work.Demo
             }
         }
 #endif
-        void OnDestroy()
-        {
-            handler.Dispose();
-        }
     }
 }

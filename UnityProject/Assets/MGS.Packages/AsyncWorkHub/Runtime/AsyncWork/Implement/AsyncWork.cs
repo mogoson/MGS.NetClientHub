@@ -23,22 +23,22 @@ namespace MGS.Work
         /// <summary>
         /// Key of work.
         /// </summary>
-        public virtual string Key { protected set; get; }
+        public string Key { protected set; get; }
 
         /// <summary>
         /// Timeout(ms) of work.
         /// </summary>
-        public virtual int Timeout { protected set; get; }
+        public int Timeout { protected set; get; }
 
         /// <summary>
         /// Work is done?
         /// </summary>
-        public virtual bool IsDone { protected set; get; }
+        public bool IsDone { protected set; get; }
 
         /// <summary>
         /// Data size(byte) of work..
         /// </summary>
-        public virtual long Size { protected set; get; }
+        public long Size { protected set; get; }
 
         /// <summary>
         /// Speed(byte/s) of work..
@@ -58,12 +58,12 @@ namespace MGS.Work
         /// <summary>
         /// Result of work.
         /// </summary>
-        public virtual T Result { protected set; get; }
+        public T Result { protected set; get; }
 
         /// <summary>
         /// Error of work.
         /// </summary>
-        public virtual Exception Error { protected set; get; }
+        public Exception Error { protected set; get; }
 
         /// <summary>
         /// Thread to do work.

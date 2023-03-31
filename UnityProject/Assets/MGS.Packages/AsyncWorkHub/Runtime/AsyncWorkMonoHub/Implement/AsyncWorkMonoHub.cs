@@ -63,9 +63,12 @@ namespace MGS.Work
         {
             base.Dispose();
 
-            Object.Destroy(behaviour.gameObject);
-            behaviour = null;
             instruction = null;
+            if (behaviour != null)
+            {
+                Object.Destroy(behaviour.gameObject);
+                behaviour = null;
+            }
         }
 
         /// <summary>
