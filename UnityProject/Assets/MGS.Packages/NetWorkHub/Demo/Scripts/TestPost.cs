@@ -21,7 +21,7 @@ namespace MGS.Work.Demo
     {
         public string url;
         public string body;
-        IAsyncWorkHandler handler;
+        IAsyncWorkHandler<string> handler;
 
         void Start()
         {

@@ -20,7 +20,7 @@ namespace MGS.Work.Demo
     public class TestDownload : MonoBehaviour
     {
         public string url;
-        IAsyncWorkHandler handler;
+        IAsyncWorkHandler<string> handler;
 
         void Start()
         {

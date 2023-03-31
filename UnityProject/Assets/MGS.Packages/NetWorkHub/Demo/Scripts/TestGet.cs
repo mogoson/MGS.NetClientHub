@@ -19,7 +19,7 @@ namespace MGS.Work.Demo
     public class TestGet : MonoBehaviour
     {
         public string url;
-        IAsyncWorkHandler handler;
+        IAsyncWorkHandler<string> handler;
 
         void Start()
         {

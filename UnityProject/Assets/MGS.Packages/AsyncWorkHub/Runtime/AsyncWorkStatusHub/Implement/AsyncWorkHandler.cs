@@ -17,12 +17,17 @@ namespace MGS.Work
     /// <summary>
     /// Handler to manage work status.
     /// </summary>
-    public class AsyncWorkHandler : IAsyncWorkHandler
+    public class AsyncWorkHandler<T> : IAsyncWorkHandler<T>
     {
         /// <summary>
         /// Work of handler.
         /// </summary>
-        public IAsyncWork Work { protected set; get; }
+        IAsyncWork IAsyncWorkHandler.Work { get { return Work; } }
+
+        /// <summary>
+        /// Work of handler.
+        /// </summary>
+        public IAsyncWork<T> Work { protected set; get; }
 
         /// <summary>
         /// On speed changed event.
@@ -37,7 +42,7 @@ namespace MGS.Work
         /// <summary>
         /// On completed event.
         /// </summary>
-        public event Action<object, Exception> OnCompleted;
+        public event Action<T, Exception> OnCompleted;
 
         /// <summary>
         /// Last speed value.
@@ -53,7 +58,7 @@ namespace MGS.Work
         /// Constructor.
         /// </summary>
         /// <param name="work"></param>
-        public AsyncWorkHandler(IAsyncWork work)
+        public AsyncWorkHandler(IAsyncWork<T> work)
         {
             Work = work;
         }
@@ -77,6 +82,7 @@ namespace MGS.Work
 
             if (Work.IsDone)
             {
+                //Is not abort.
                 if (Work.Result != null || Work.Error != null)
                 {
                     InvokeOnCompleted(Work.Result, Work.Error);
@@ -91,38 +97,45 @@ namespace MGS.Work
         {
             Work.Dispose();
             Work = null;
+            ClearEvents();
+        }
 
+        /// <summary>
+        /// Clear callback events.
+        /// </summary>
+        protected void ClearEvents()
+        {
             OnSpeedChanged = null;
             OnProgressChanged = null;
             OnCompleted = null;
         }
 
         /// <summary>
-        /// Invoke OnSpeedChanged.
+        /// Invoke OnSpeedChanged event.
         /// </summary>
         /// <param name="speed"></param>
-        protected virtual void InvokeOnSpeedChanged(double speed)
+        protected void InvokeOnSpeedChanged(double speed)
         {
             OnSpeedChanged?.Invoke(speed);
         }
 
         /// <summary>
-        /// Invoke OnProgressChanged.
+        /// Invoke OnProgressChanged event.
         /// </summary>
         /// <param name="progress"></param>
-        protected virtual void InvokeOnProgressChanged(float progress)
+        protected void InvokeOnProgressChanged(float progress)
         {
             OnProgressChanged?.Invoke(progress);
         }
 
         /// <summary>
-        /// Invoke OnCompleted.
+        /// Invoke OnCompleted event.
         /// </summary>
         /// <param name="result"></param>
         /// <param name="error"></param>
-        protected virtual void InvokeOnCompleted(object result, Exception error)
+        protected void InvokeOnCompleted(T result, Exception error)
         {
-            OnCompleted?.Invoke(result, error);
+            OnCompleted?.Invoke(Work.Result, Work.Error);
         }
     }
 }

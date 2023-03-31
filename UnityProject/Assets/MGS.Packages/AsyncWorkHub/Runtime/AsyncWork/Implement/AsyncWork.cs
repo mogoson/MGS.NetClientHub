@@ -18,7 +18,7 @@ namespace MGS.Work
     /// <summary>
     /// Async work abstract implement.
     /// </summary>
-    public abstract class AsyncWork : IAsyncWork
+    public abstract class AsyncWork<T> : IAsyncWork<T>
     {
         /// <summary>
         /// Key of work.
@@ -53,7 +53,12 @@ namespace MGS.Work
         /// <summary>
         /// Result of work.
         /// </summary>
-        public virtual object Result { protected set; get; }
+        object IAsyncWork.Result { get { return Result; } }
+
+        /// <summary>
+        /// Result of work.
+        /// </summary>
+        public virtual T Result { protected set; get; }
 
         /// <summary>
         /// Error of work.
@@ -134,7 +139,7 @@ namespace MGS.Work
             Size = 0;
             Speed = 0;
             Progress = 0;
-            Result = null;
+            Result = default;
             Error = null;
         }
 

@@ -1,12 +1,12 @@
 ﻿/*************************************************************************
- *  Copyright © 2023 Mogoson. All rights reserved.
+ *  Copyright © 2022 Mogoson. All rights reserved.
  *------------------------------------------------------------------------
  *  File         :  IAsyncWorkHandler.cs
- *  Description  :  Interface of handler to manage work status.
+ *  Description  :  Interface of async handler.
  *------------------------------------------------------------------------
  *  Author       :  Mogoson
  *  Version      :  1.0
- *  Date         :  03/10/2023
+ *  Date         :  7/20/2022
  *  Description  :  Initial development version.
  *************************************************************************/
 
@@ -15,14 +15,31 @@ using System;
 namespace MGS.Work
 {
     /// <summary>
-    /// Interface of handler to manage work status.
+    /// Interface of async handler.
     /// </summary>
     public interface IAsyncWorkHandler : IDisposable
     {
         /// <summary>
-        /// Work of handler.
+        /// Handle work;
         /// </summary>
         IAsyncWork Work { get; }
+
+        /// <summary>
+        /// Notify status of work.
+        /// </summary>
+        void NotifyStatus();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IAsyncWorkHandler<T> : IAsyncWorkHandler
+    {
+        /// <summary>
+        /// Handle work;
+        /// </summary>
+        new IAsyncWork<T> Work { get; }
 
         /// <summary>
         /// On speed changed event.
@@ -37,28 +54,6 @@ namespace MGS.Work
         /// <summary>
         /// On completed event.
         /// </summary>
-        event Action<object, Exception> OnCompleted;
-
-        /// <summary>
-        /// Notify status of work.
-        /// </summary>
-        void NotifyStatus();
-    }
-
-    /// <summary>
-    /// Interface of handler to manage work status.
-    /// </summary>
-    /// <typeparam name="T">Type of work result.</typeparam>
-    public interface IAsyncWorkHandler<T> : IAsyncWorkHandler
-    {
-        /// <summary>
-        /// Work of handler.
-        /// </summary>
-        new IAsyncWork<T> Work { get; }
-
-        /// <summary>
-        /// On completed event.
-        /// </summary>
-        new event Action<T, Exception> OnCompleted;
+        event Action<T, Exception> OnCompleted;
     }
 }
