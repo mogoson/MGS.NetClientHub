@@ -10,10 +10,9 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
-using MGS.Work.Net;
 using UnityEngine;
 
-namespace MGS.Work.Demo
+namespace MGS.Work.Net.Demo
 {
     public class TestNet : MonoBehaviour
     {

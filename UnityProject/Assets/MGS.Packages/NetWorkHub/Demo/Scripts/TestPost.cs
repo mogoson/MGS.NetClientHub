@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MGS.Work.Demo
+namespace MGS.Work.Net.Demo
 {
     public class TestPost : TestNet
     {

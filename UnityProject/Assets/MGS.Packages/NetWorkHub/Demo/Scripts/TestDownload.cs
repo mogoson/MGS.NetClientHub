@@ -15,7 +15,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace MGS.Work.Demo
+namespace MGS.Work.Net.Demo
 {
     public class TestDownload : TestNet
     {
