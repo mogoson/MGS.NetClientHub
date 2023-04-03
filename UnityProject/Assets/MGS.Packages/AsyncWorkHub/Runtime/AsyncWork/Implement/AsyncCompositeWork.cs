@@ -1,8 +1,8 @@
 ﻿/*************************************************************************
  *  Copyright © 2022 Mogoson. All rights reserved.
  *------------------------------------------------------------------------
- *  File         :  AsyncStepWork.cs
- *  Description  :  Async step work abstract implement.
+ *  File         :  AsyncCompositeWork.cs
+ *  Description  :  Async composite work abstract implement.
  *------------------------------------------------------------------------
  *  Author       :  Mogoson
  *  Version      :  1.0
@@ -15,9 +15,9 @@ using System.Collections.Generic;
 namespace MGS.Work
 {
     /// <summary>
-    /// Async step work abstract implement.
+    /// Async composite work abstract implement.
     /// </summary>
-    public class AsyncStepWork<T> : AsyncWork<T>
+    public class AsyncCompositeWork<T> : AsyncWork<T>
     {
         /// <summary>
         /// Speed(byte/s) of work..
@@ -79,7 +79,7 @@ namespace MGS.Work
         /// </summary>
         /// <param name="works">Step works.</param>
         /// <param name="weights">Weights for each work.</param>
-        public AsyncStepWork(ICollection<IAsyncWork> works, float[] weights = null)
+        public AsyncCompositeWork(ICollection<IAsyncWork> works, float[] weights = null)
         {
             this.works = works;
             if (weights == null)
@@ -109,7 +109,7 @@ namespace MGS.Work
                 if (work.Error != null)
                 {
                     Error = work.Error;
-                    break;
+                    return;
                 }
                 progress += work.Progress * weights[step];
             }

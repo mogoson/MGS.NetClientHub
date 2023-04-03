@@ -71,6 +71,14 @@ namespace MGS.Work
         protected Thread thread;
 
         /// <summary>
+        /// Constructor.
+        /// </summary>
+        protected AsyncWork()
+        {
+            Key = Guid.NewGuid().ToString();
+        }
+
+        /// <summary>
         /// Execute work operation.
         /// </summary>
         public abstract void Execute();
