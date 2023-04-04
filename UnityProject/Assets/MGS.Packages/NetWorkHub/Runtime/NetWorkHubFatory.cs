@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace MGS.Work.Net
 {
@@ -20,6 +21,16 @@ namespace MGS.Work.Net
     /// </summary>
     public sealed class NetWorkHubFatory
     {
+        /// <summary>
+        /// The maximum number of concurrent connections allowed by a ServicePoint object.
+        /// The default connection limit is 10 for ASP.NET hosted applications and 2 for all others.
+        /// </summary>
+        public static int NetConnectionLimit
+        {
+            set { ServicePointManager.DefaultConnectionLimit = value; }
+            get { return ServicePointManager.DefaultConnectionLimit; }
+        }
+
         /// <summary>
         /// Create net hub with concurrency and cache ability.
         /// </summary>

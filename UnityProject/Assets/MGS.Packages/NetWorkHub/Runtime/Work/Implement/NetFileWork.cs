@@ -83,16 +83,14 @@ namespace MGS.Work.Net
             Size += tempSize;
             RequireDirectory(tempFile);
 
+            int readSize;
+            var buffer = new byte[BUFFER_SIZE];
+            float cacheSize = tempSize;
+            var statisticsSize = 0f;
+            var statisticsTimer = 0d;
+            var lastStatisticsTicks = DateTime.Now.Ticks;
             using (var fileStream = new FileStream(tempFile, FileMode.Append))
             {
-                int readSize;
-                var buffer = new byte[BUFFER_SIZE];
-
-                float cacheSize = tempSize;
-                var statisticsSize = 0f;
-                var statisticsTimer = 0d;
-                var lastStatisticsTicks = DateTime.Now.Ticks;
-
                 //Not canceled and can read buffer.
                 while (!IsDone && (readSize = stream.Read(buffer, 0, buffer.Length)) > 0)
                 {

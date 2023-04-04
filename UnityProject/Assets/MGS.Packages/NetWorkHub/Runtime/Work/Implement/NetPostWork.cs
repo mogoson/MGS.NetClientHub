@@ -57,11 +57,11 @@ namespace MGS.Work.Net
         protected override void ExecuteRequest(HttpWebRequest request)
         {
             request.Method = "POST";
-            var requestStream = request.GetRequestStream();
-
-            var postBuffer = Encoding.UTF8.GetBytes(PostData);
-            requestStream.Write(postBuffer, 0, postBuffer.Length);
-            requestStream.Close();
+            using (var requestStream = request.GetRequestStream())
+            {
+                var postBuffer = Encoding.UTF8.GetBytes(PostData);
+                requestStream.Write(postBuffer, 0, postBuffer.Length);
+            }
             Progress = 0.5f;
 
             base.ExecuteRequest(request);

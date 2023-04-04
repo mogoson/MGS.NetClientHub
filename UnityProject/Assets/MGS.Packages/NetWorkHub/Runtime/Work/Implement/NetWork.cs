@@ -137,18 +137,20 @@ namespace MGS.Work.Net
         /// <param name="request"></param>
         protected virtual void ExecuteRequest(HttpWebRequest request)
         {
-            var response = request.GetResponse();
-            Size = response.ContentLength;
-
-            var encoding = response.Headers.Get("Content-Encoding");
-            var responseStream = response.GetResponseStream();
-            if (encoding == "gzip")
+            using (var response = request.GetResponse())
             {
-                responseStream = new GZipStream(responseStream, CompressionMode.Decompress);
-            }
+                Size = response.ContentLength;
 
-            Result = ReadResult(responseStream);
-            responseStream.Close();
+                var encoding = response.Headers.Get("Content-Encoding");
+                var responseStream = response.GetResponseStream();
+                if (encoding == "gzip")
+                {
+                    responseStream = new GZipStream(responseStream, CompressionMode.Decompress);
+                }
+
+                Result = ReadResult(responseStream);
+                responseStream.Dispose();
+            }
             Progress = 1.0f;
         }
 
