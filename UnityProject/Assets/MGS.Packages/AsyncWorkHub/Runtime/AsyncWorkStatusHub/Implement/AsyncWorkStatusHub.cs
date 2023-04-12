@@ -59,19 +59,23 @@ namespace MGS.Work
         /// </summary>
         public void TickStatus()
         {
-            temps.Clear();
-            foreach (var handler in handlers.Values)
+            temps.AddRange(handlers.Keys);
+            for (int i = 0; i < temps.Count; i++)
             {
+                var key = temps[i];
+                var handler = handlers[key];
                 handler.NotifyStatus();
-                if (handler.Work.IsDone)
+                if (!handler.Work.IsDone)
                 {
-                    temps.Add(handler.Work.Key);
+                    temps.RemoveAt(i);
+                    i--;
                 }
             }
             foreach (var key in temps)
             {
                 handlers.Remove(key);
             }
+            temps.Clear();
         }
 
         /// <summary>
