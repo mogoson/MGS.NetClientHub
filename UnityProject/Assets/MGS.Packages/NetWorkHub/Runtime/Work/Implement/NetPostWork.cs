@@ -36,18 +36,8 @@ namespace MGS.Work.Net
         /// <param name="headData">Head data of request.</param>
         public NetPostWork(string url, int timeout, string postData, IDictionary<string, string> headData = null) : base(url, timeout, headData)
         {
-            Key = GetKey(url, postData);
+            Key = $"{url}{postData}".GetHashCode().ToString();
             PostData = postData;
-        }
-
-        /// <summary>
-        /// Get key for work.
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public static string GetKey(string url, string postData)
-        {
-            return (url + postData).GetHashCode().ToString();
         }
 
         /// <summary>

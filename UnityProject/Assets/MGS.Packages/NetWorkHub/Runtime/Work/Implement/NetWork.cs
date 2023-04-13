@@ -45,20 +45,10 @@ namespace MGS.Work.Net
         /// <param name="headData">Head data of request.</param>
         public NetWork(string url, int timeout, IDictionary<string, string> headData = null)
         {
-            Key = GetKey(url);
+            Key = url.GetHashCode().ToString();
             URL = url;
             Timeout = timeout;
             this.headData = headData;
-        }
-
-        /// <summary>
-        /// Get key for work.
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public static string GetKey(string url)
-        {
-            return url.GetHashCode().ToString();
         }
 
         /// <summary>
