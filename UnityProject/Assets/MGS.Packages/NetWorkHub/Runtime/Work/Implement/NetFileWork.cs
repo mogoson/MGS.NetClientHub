@@ -114,7 +114,14 @@ namespace MGS.Work.Net
             //Not canceled.
             if (!IsDone)
             {
-                RequireDirectory(FilePath);
+                if (File.Exists(FilePath))
+                {
+                    File.Delete(FilePath);
+                }
+                else
+                {
+                    RequireDirectory(FilePath);
+                }
                 File.Move(tempFile, FilePath);
             }
             return FilePath;

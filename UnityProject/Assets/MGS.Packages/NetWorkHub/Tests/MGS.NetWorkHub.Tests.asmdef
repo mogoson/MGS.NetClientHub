@@ -3,8 +3,8 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "MGS.NetWorkHub",
-        "MGS.AsyncWorkHub"
+        "MGS.AsyncWorkHub",
+        "MGS.NetWorkHub"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

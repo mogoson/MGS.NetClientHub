@@ -52,16 +52,6 @@ namespace MGS.Work.Net
         }
 
         /// <summary>
-        /// Execute work operation.
-        /// </summary>
-        public override void Execute()
-        {
-            request = CreateWebRequest(URL);
-            AddHeaders(request, headData);
-            ExecuteRequest(request);
-        }
-
-        /// <summary>
         /// Abort work.
         /// </summary>
         public override void AbortAsync()
@@ -81,6 +71,16 @@ namespace MGS.Work.Net
         {
             base.Dispose();
             headData = null;
+        }
+
+        /// <summary>
+        /// On execute work operation.
+        /// </summary>
+        protected override void OnExecute()
+        {
+            request = CreateWebRequest(URL);
+            AddHeaders(request, headData);
+            ExecuteRequest(request);
         }
 
         /// <summary>
