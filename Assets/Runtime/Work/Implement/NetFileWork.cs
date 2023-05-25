@@ -113,6 +113,11 @@ namespace MGS.Work.Net
             //Not canceled.
             if (!IsDone)
             {
+                if (cacheSize < Size)
+                {
+                    throw new WebException("Can not read full bytes from response stream. INFINITE_RETRY");
+                }
+
                 if (File.Exists(FilePath))
                 {
                     File.Delete(FilePath);
