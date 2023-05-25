@@ -85,7 +85,7 @@ namespace MGS.Work.Net
 
             int readSize;
             var buffer = new byte[BUFFER_SIZE];
-            float cacheSize = tempSize;
+            var cacheSize = tempSize;
             var statisticsSize = 0f;
             var lastStatisticsTicks = DateTime.Now.Ticks;
             using (var fileStream = new FileStream(tempFile, FileMode.Append))
@@ -96,7 +96,7 @@ namespace MGS.Work.Net
                     fileStream.Write(buffer, 0, readSize);
 
                     cacheSize += readSize;
-                    Progress = cacheSize / Size;
+                    Progress = (float)cacheSize / Size;
 
                     statisticsSize += readSize;
                     double statisticsTimer = (DateTime.Now.Ticks - lastStatisticsTicks) * 1e-4;
@@ -115,7 +115,8 @@ namespace MGS.Work.Net
             {
                 if (cacheSize < Size)
                 {
-                    throw new WebException("Can not read full bytes from response stream. INFINITE_RETRY");
+                    Error = new WebException("Can not read full bytes from response stream. INFINITE_RETRY");
+                    return null;
                 }
 
                 if (File.Exists(FilePath))
