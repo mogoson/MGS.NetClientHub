@@ -1,0 +1,7 @@
+{
+    "description": "Client connect to remote server to request data.",
+    "displayName": "Net Client Hub",
+    "name": "com.mgs.common",
+    "unity": "2019.4",
+    "version": "1.0.0"
+}
