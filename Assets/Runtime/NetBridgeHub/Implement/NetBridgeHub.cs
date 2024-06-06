@@ -12,7 +12,7 @@
  *************************************************************************/
 
 using System.Collections.Generic;
-using MGS.Caches;
+using MGS.Cachers;
 
 namespace MGS.Net
 {

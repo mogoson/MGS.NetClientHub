@@ -10,7 +10,7 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
-using MGS.Caches;
+using MGS.Cachers;
 
 namespace MGS.Net
 {

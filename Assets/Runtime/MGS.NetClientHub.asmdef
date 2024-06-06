@@ -2,7 +2,7 @@
     "name": "MGS.NetClientHub",
     "rootNamespace": "",
     "references": [
-        "MGS.Cache"
+        "MGS.Cachers"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

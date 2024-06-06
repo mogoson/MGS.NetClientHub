@@ -1,10 +1,11 @@
 {
   "dependencies": {
-    "com.mgs.cache": {
-      "version": "file:com.mgs.cache",
+    "com.mgs.cacher": {
+      "version": "https://github.com/mogoson/MGS.Cacher.git?path=/Assets",
       "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
+      "source": "git",
+      "dependencies": {},
+      "hash": "1d30d3b9db4d9cb53ba0c975ae2d911b8ec15cc1"
     },
     "com.unity.collab-proxy": {
       "version": "2.0.1",
