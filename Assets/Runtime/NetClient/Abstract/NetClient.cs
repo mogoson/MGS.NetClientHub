@@ -213,6 +213,16 @@ namespace MGS.Net
                     request.ContentType = data.Value;
                     continue;
                 }
+                if (data.Key == "Accept")
+                {
+                    request.Accept = data.Value;
+                    continue;
+                }
+                if (data.Key == "UserAgent")
+                {
+                    request.UserAgent = data.Value;
+                    continue;
+                }
                 request.Headers.Add(data.Key, data.Value);
             }
         }
