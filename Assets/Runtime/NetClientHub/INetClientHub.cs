@@ -10,26 +10,16 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
-using System;
 using System.Collections.Generic;
+using MGS.Work;
 
 namespace MGS.Net
 {
     /// <summary>
     /// Interface of hub to manage net clients.
     /// </summary>
-    public interface INetClientHub : IDisposable
+    public interface INetClientHub : IAsyncWorkStatusHub
     {
-        /// <summary>
-        /// Max count of concurrency clients.
-        /// </summary>
-        int Concurrency { set; get; }
-
-        /// <summary>
-        /// Net resolver to check retrieable.
-        /// </summary>
-        INetResolver Resolver { set; get; }
-
         /// <summary>
         /// Get url to server.
         /// </summary>
@@ -37,7 +27,7 @@ namespace MGS.Net
         /// <param name="timeout">Timeout(ms) of request.</param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        INetClient GetAsync(string url, int timeout, IDictionary<string, string> headData = null);
+        IAsyncWorkHandler<string> GetAsync(string url, int timeout, IDictionary<string, string> headData = null);
 
         /// <summary>
         /// Post url and data to server.
@@ -47,7 +37,7 @@ namespace MGS.Net
         /// <param name="postData"></param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        INetClient PostAsync(string url, int timeout, string postData, IDictionary<string, string> headData = null);
+        IAsyncWorkHandler<string> PostAsync(string url, int timeout, string postData, IDictionary<string, string> headData = null);
 
         /// <summary>
         /// Download file from server.
@@ -57,13 +47,6 @@ namespace MGS.Net
         /// <param name="filePath"></param>
         /// <param name="headData">Head data of request.</param>
         /// <returns></returns>
-        INetClient DownloadAsync(string url, int timeout, string filePath, IDictionary<string, string> headData = null);
-
-        /// <summary>
-        /// Clear cache resources.
-        /// </summary>
-        /// <param name="workings">Clear the working clients?</param>
-        /// <param name="waitings">Clear the waiting clients?</param>
-        void Clear(bool workings, bool waitings);
+        IAsyncWorkHandler<string> DownloadAsync(string url, int timeout, string filePath, IDictionary<string, string> headData = null);
     }
 }

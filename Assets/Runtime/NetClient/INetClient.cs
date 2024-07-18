@@ -1,21 +1,27 @@
 ﻿/*************************************************************************
- *  Copyright © 2023 Mogoson. All rights reserved.
+ *  Copyright © 2022 Mogoson. All rights reserved.
  *------------------------------------------------------------------------
- *  File         :  INetMonoHub.cs
- *  Description  :  Interface for hub to manage net clients and cache net
- *                  data, and unity main thread notify status.
+ *  File         :  INetClient.cs
+ *  Description  :  Interface of client to connect remote.
  *------------------------------------------------------------------------
  *  Author       :  Mogoson
  *  Version      :  1.0
- *  Date         :  03/10/2023
+ *  Date         :  7/20/2022
  *  Description  :  Initial development version.
  *************************************************************************/
+
+using MGS.Work;
 
 namespace MGS.Net
 {
     /// <summary>
-    /// Interface for hub to manage net clients and cache net data,
-    /// and unity main thread notify status.
+    /// Interface of client to connect remote.
     /// </summary>
-    public interface INetMonoHub : INetBridgeHub { }
+    public interface INetClient<T> : IAsyncWork<T>
+    {
+        /// <summary>
+        /// Remote url string.
+        /// </summary>
+        string URL { get; }
+    }
 }

@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.mgs.asyncworkhub": {
+      "version": "https://github.com/mogoson/MGS.AsyncWorkHub.git?path=/Assets",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "5d822a2b9d9706d8bfb546d9bfcbe1411e2745bd"
+    },
     "com.mgs.cacher": {
       "version": "https://github.com/mogoson/MGS.Cacher.git?path=/Assets",
       "depth": 0,

@@ -19,7 +19,7 @@ namespace MGS.Net
     /// <summary>
     /// Net get client.
     /// </summary>
-    public class NetGetClient : NetClient
+    public class NetGetClient : NetClient<string>
     {
         /// <summary>
         /// Constructor.
@@ -44,7 +44,7 @@ namespace MGS.Net
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        protected override object ReadResult(Stream stream)
+        protected override string ReadResult(Stream stream)
         {
             using (var reader = new StreamReader(stream))
             {

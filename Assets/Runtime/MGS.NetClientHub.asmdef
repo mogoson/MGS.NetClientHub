@@ -2,6 +2,7 @@
     "name": "MGS.NetClientHub",
     "rootNamespace": "",
     "references": [
+        "MGS.AsyncWorkHub",
         "MGS.Cachers"
     ],
     "includePlatforms": [],

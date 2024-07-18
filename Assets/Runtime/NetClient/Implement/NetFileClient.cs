@@ -20,7 +20,7 @@ namespace MGS.Net
     /// <summary>
     /// Net file client.
     /// </summary>
-    public class NetFileClient : NetClient
+    public class NetFileClient : NetClient<string>
     {
         /// <summary>
         /// Size(byte) of buffer to copy stream.
@@ -35,17 +35,17 @@ namespace MGS.Net
         /// <summary>
         /// Path of local file.
         /// </summary>
-        public string FilePath { protected set; get; }
+        protected string filePath;
 
         /// <summary>
         /// Path of temp file.
         /// </summary>
-        private string tempFile;
+        protected string tempFile;
 
         /// <summary>
         /// Size of temp file.
         /// </summary>
-        private long tempSize;
+        protected long tempSize;
 
         /// <summary>
         /// Constructor.
@@ -56,7 +56,7 @@ namespace MGS.Net
         /// <param name="headData">Head data of request.</param>
         public NetFileClient(string url, int timeout, string filePath, IDictionary<string, string> headData = null) : base(url, timeout, headData)
         {
-            FilePath = filePath;
+            this.filePath = filePath;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace MGS.Net
         /// <param name="url"></param>
         protected override void DoRequest(HttpWebRequest request)
         {
-            tempFile = GetTempFilePath(URL, FilePath);
+            tempFile = GetTempFilePath(URL, filePath);
             tempSize = GetFileLength(tempFile);
             request.AddRange(tempSize);
 
@@ -78,7 +78,7 @@ namespace MGS.Net
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        protected override object ReadResult(Stream stream)
+        protected override string ReadResult(Stream stream)
         {
             Size += tempSize;
             RequireDirectory(tempFile);
@@ -116,10 +116,10 @@ namespace MGS.Net
             //Not canceled.
             if (!IsDone)
             {
-                RequireDirectory(FilePath);
-                File.Move(tempFile, FilePath);
+                RequireDirectory(filePath);
+                File.Move(tempFile, filePath);
             }
-            return FilePath;
+            return filePath;
         }
 
         /// <summary>

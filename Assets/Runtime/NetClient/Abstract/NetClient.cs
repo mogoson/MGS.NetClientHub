@@ -10,74 +10,28 @@
  *  Description  :  Initial development version.
  *************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
-using System.Threading;
+using MGS.Work;
 
 namespace MGS.Net
 {
     /// <summary>
     /// Net client abstract implement.
     /// </summary>
-    public abstract class NetClient : INetClient
+    public abstract class NetClient<T> : AsyncWork<T>, INetClient<T>
     {
-        /// <summary>
-        /// Key of client.
-        /// </summary>
-        public string Key { protected set; get; }
-
         /// <summary>
         /// Remote url string.
         /// </summary>
         public string URL { protected set; get; }
 
         /// <summary>
-        /// Timeout(ms) of request.
-        /// </summary>
-        public int Timeout { protected set; get; }
-
-        /// <summary>
-        /// Work of client is done?
-        /// </summary>
-        public bool IsDone { protected set; get; }
-
-        /// <summary>
-        /// Data size(byte).
-        /// </summary>
-        public long Size { protected set; get; }
-
-        /// <summary>
-        /// Request speed(byte/s).
-        /// </summary>
-        public double Speed { protected set; get; }
-
-        /// <summary>
-        /// Progress(0~1) of work.
-        /// </summary>
-        public float Progress { protected set; get; }
-
-        /// <summary>
-        /// Result of work.
-        /// </summary>
-        public object Result { protected set; get; }
-
-        /// <summary>
-        /// Error of work.
-        /// </summary>
-        public Exception Error { protected set; get; }
-
-        /// <summary>
-        /// Dont set the property "IsDone" as true if error?
+        /// 
         /// </summary>
         public bool DontSetDoneIfError { set; get; }
-
-        /// <summary>
-        /// Head data of request.
-        /// </summary>
-        protected IDictionary<string, string> headData;
 
         /// <summary>
         /// HttpWebRequest to connect remote.
@@ -85,9 +39,9 @@ namespace MGS.Net
         protected HttpWebRequest request;
 
         /// <summary>
-        /// Thread to do net work.
+        /// Head data of request.
         /// </summary>
-        protected Thread thread;
+        protected IDictionary<string, string> headData;
 
         /// <summary>
         /// Constructor.
@@ -114,69 +68,25 @@ namespace MGS.Net
         }
 
         /// <summary>
-        /// Open client to do net work.
+        /// 
         /// </summary>
-        public virtual void Open()
+        protected override void OnExecute()
         {
             if (request == null)
             {
-                Reset();
-
                 request = CreateWebRequest(URL);
                 AddHeaders(request, headData);
-
-                thread = CreateRequestThread(request);
-                thread.Start();
+                DoRequest(request);
             }
         }
 
         /// <summary>
-        /// Close client to abort net work.
+        /// 
         /// </summary>
-        public virtual void Close()
+        protected override void OnFinally()
         {
-            if (thread != null)
-            {
-                if (thread.IsAlive)
-                {
-                    thread.Abort();
-                }
-                thread = null;
-            }
-
-            if (request != null)
-            {
-                request.Abort();
-                request = null;
-            }
-
-            if (Error == null || !DontSetDoneIfError)
-            {
-                IsDone = true;
-            }
-        }
-
-        /// <summary>
-        /// Dispose all resource.
-        /// </summary>
-        public void Dispose()
-        {
-            Close();
-            Reset();
-            headData = null;
-        }
-
-        /// <summary>
-        /// Reset status.
-        /// </summary>
-        protected void Reset()
-        {
-            IsDone = false;
-            Size = 0;
-            Speed = 0;
-            Progress = 0;
-            Result = null;
-            Error = null;
+            base.OnFinally();
+            request = null;
         }
 
         /// <summary>
@@ -208,7 +118,7 @@ namespace MGS.Net
 
             foreach (var data in headData)
             {
-                if (data.Key == "Content-Type")
+                if (data.Key == "ContentType")
                 {
                     request.ContentType = data.Value;
                     continue;
@@ -225,28 +135,6 @@ namespace MGS.Net
                 }
                 request.Headers.Add(data.Key, data.Value);
             }
-        }
-
-        /// <summary>
-        /// Create Thread to do web request work.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        protected Thread CreateRequestThread(HttpWebRequest request)
-        {
-            return new Thread(() =>
-            {
-                try
-                {
-                    DoRequest(request);
-                }
-                catch (Exception ex)
-                {
-                    Error = ex;
-                    Close();
-                }
-            })
-            { IsBackground = true };
         }
 
         /// <summary>
@@ -270,9 +158,6 @@ namespace MGS.Net
 
             Progress = 1.0f;
             IsDone = true;
-
-            thread = null;
-            request = null;
         }
 
         /// <summary>
@@ -280,6 +165,6 @@ namespace MGS.Net
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        protected abstract object ReadResult(Stream stream);
+        protected abstract T ReadResult(Stream stream);
     }
 }

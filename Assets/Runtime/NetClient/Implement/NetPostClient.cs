@@ -20,7 +20,7 @@ namespace MGS.Net
     /// <summary>
     /// Net post client.
     /// </summary>
-    public class NetPostClient : NetClient
+    public class NetPostClient : NetClient<string>
     {
         /// <summary>
         /// Post data of request.
@@ -73,7 +73,7 @@ namespace MGS.Net
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        protected override object ReadResult(Stream stream)
+        protected override string ReadResult(Stream stream)
         {
             using (var reader = new StreamReader(stream))
             {
