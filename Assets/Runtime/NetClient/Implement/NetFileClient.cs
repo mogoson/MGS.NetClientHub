@@ -64,13 +64,13 @@ namespace MGS.Net
         /// </summary>
         /// <param name="request"></param>
         /// <param name="url"></param>
-        protected override void DoRequest(HttpWebRequest request)
+        protected override string DoRequest(HttpWebRequest request)
         {
             tempFile = GetTempFilePath(URL, filePath);
             tempSize = GetFileLength(tempFile);
             request.AddRange(tempSize);
 
-            base.DoRequest(request);
+            return base.DoRequest(request);
         }
 
         /// <summary>

@@ -70,14 +70,15 @@ namespace MGS.Net
         /// <summary>
         /// 
         /// </summary>
-        protected override void OnExecute()
+        protected override T OnExecute()
         {
             if (request == null)
             {
                 request = CreateWebRequest(URL);
                 AddHeaders(request, headData);
-                DoRequest(request);
+                return DoRequest(request);
             }
+            return default;
         }
 
         /// <summary>
@@ -141,7 +142,7 @@ namespace MGS.Net
         /// Do request work.
         /// </summary>
         /// <param name="request"></param>
-        protected virtual void DoRequest(HttpWebRequest request)
+        protected virtual T DoRequest(HttpWebRequest request)
         {
             var response = request.GetResponse();
             Size = response.ContentLength;
@@ -153,11 +154,11 @@ namespace MGS.Net
                 responseStream = new GZipStream(responseStream, CompressionMode.Decompress);
             }
 
-            Result = ReadResult(responseStream);
+            var result = ReadResult(responseStream);
             responseStream.Close();
 
             Progress = 1.0f;
-            IsDone = true;
+            return result;
         }
 
         /// <summary>

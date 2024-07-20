@@ -55,7 +55,7 @@ namespace MGS.Net
         /// Do request work.
         /// </summary>
         /// <param name="request"></param>
-        protected override void DoRequest(HttpWebRequest request)
+        protected override string DoRequest(HttpWebRequest request)
         {
             request.Method = "POST";
             var requestStream = request.GetRequestStream();
@@ -65,7 +65,7 @@ namespace MGS.Net
             requestStream.Close();
             Progress = 0.5f;
 
-            base.DoRequest(request);
+            return base.DoRequest(request);
         }
 
         /// <summary>

@@ -5,14 +5,14 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "5d822a2b9d9706d8bfb546d9bfcbe1411e2745bd"
+      "hash": "b4efe2d35e4102885fc89efbb5c02b5c2c3127ef"
     },
     "com.mgs.cacher": {
       "version": "https://github.com/mogoson/MGS.Cacher.git?path=/Assets",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "1d30d3b9db4d9cb53ba0c975ae2d911b8ec15cc1"
+      "hash": "0a4caa3ea8f202cd38016f0745eb63e4240bbcc4"
     },
     "com.unity.collab-proxy": {
       "version": "2.3.1",
